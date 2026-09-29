@@ -20,6 +20,10 @@
                     @auth
                         @unless(auth()->user()->must_change_password)
                             <li class="nav-item"><a class="nav-link" href="{{ route('dashboard') }}">Kontrolna tabla</a></li>
+                            @if(auth()->user()->role === \App\Enums\UserRole::SuperAdmin)
+                                <li class="nav-item"><a class="nav-link" href="{{ route('admin.students.index') }}">Studenti</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{{ route('admin.professors.index') }}">Profesori</a></li>
+                            @endif
                         @endunless
                         <li class="nav-item">
                             <form method="POST" action="{{ route('logout') }}">
