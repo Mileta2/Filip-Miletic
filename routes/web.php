@@ -6,9 +6,14 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ProfessorController as AdminProfessorController;
 use App\Http\Controllers\Admin\StudentController as AdminStudentController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TopicController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
+Route::get('/teme', [TopicController::class, 'index'])->name('topics.index');
+Route::get('/diplomski-radovi', [TopicController::class, 'undergraduate'])->name('topics.undergraduate');
+Route::get('/master-radovi', [TopicController::class, 'master'])->name('topics.master');
+Route::get('/teme/{topic}', [TopicController::class, 'show'])->name('topics.show');
 
 Route::middleware('guest')->group(function () {
     Route::get('/prijava', [LoginController::class, 'create'])->name('login');
@@ -22,6 +27,13 @@ Route::middleware(['auth', 'active'])->group(function () {
 
     Route::middleware('password.changed')->group(function () {
         Route::get('/kontrolna-tabla', DashboardController::class)->name('dashboard');
+        Route::get('/nova-tema', [TopicController::class, 'create'])->name('topics.create');
+        Route::post('/teme', [TopicController::class, 'store'])->name('topics.store');
+        Route::get('/teme/{topic}/izmena', [TopicController::class, 'edit'])->name('topics.edit');
+        Route::put('/teme/{topic}', [TopicController::class, 'update'])->name('topics.update');
+        Route::delete('/teme/{topic}', [TopicController::class, 'destroy'])->name('topics.destroy');
+        Route::get('/teme/{topic}/pdf', [TopicController::class, 'download'])->name('topics.pdf.download');
+        Route::delete('/teme/{topic}/pdf', [TopicController::class, 'deletePdf'])->name('topics.pdf.destroy');
 
         Route::middleware('role:super_admin')->prefix('admin')->name('admin.')->group(function () {
             Route::get('/', AdminDashboardController::class)->name('dashboard');

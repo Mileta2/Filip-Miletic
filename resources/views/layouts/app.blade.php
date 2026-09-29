@@ -17,12 +17,17 @@
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
                     <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Početna</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('topics.undergraduate') }}">Diplomski</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('topics.master') }}">Master</a></li>
                     @auth
                         @unless(auth()->user()->must_change_password)
                             <li class="nav-item"><a class="nav-link" href="{{ route('dashboard') }}">Kontrolna tabla</a></li>
                             @if(auth()->user()->role === \App\Enums\UserRole::SuperAdmin)
+                                <li class="nav-item"><a class="nav-link" href="{{ route('topics.index') }}">Teme</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{{ route('admin.students.index') }}">Studenti</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{{ route('admin.professors.index') }}">Profesori</a></li>
+                            @elseif(auth()->user()->role === \App\Enums\UserRole::Professor)
+                                <li class="nav-item"><a class="nav-link" href="{{ route('topics.create') }}">Nova tema</a></li>
                             @endif
                         @endunless
                         <li class="nav-item">

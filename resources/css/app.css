@@ -21,6 +21,25 @@ body {
     --bs-btn-hover-border-color: #0b5fa5;
 }
 
+.hero-panel {
+    background: linear-gradient(135deg, #0b3154 0%, #1976c9 72%, #2c8bd9 100%);
+}
+
+.topic-card,
+.topic-type-card,
+.stat-card {
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.topic-card:hover,
+.topic-type-card:hover {
+    transform: translateY(-4px);
+}
+
+.topic-description {
+    line-height: 1.75;
+}
+
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
