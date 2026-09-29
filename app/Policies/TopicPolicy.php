@@ -45,4 +45,9 @@ class TopicPolicy
     {
         return $user->hasRole(UserRole::Professor) && $topic->mentor_id === $user->id;
     }
+
+    public function defend(User $user, Topic $topic): bool
+    {
+        return $user->hasRole(UserRole::Professor) && $topic->mentor_id === $user->id;
+    }
 }

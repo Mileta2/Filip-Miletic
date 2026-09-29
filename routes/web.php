@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\StudentController as AdminStudentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\TopicWorkflowController;
+use App\Http\Controllers\DefenseController;
 use App\Http\Controllers\Professor\DashboardController as ProfessorDashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
@@ -42,6 +43,8 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::get('/teme/{topic}/pdf', [TopicController::class, 'download'])->name('topics.pdf.download');
         Route::delete('/teme/{topic}/pdf', [TopicController::class, 'deletePdf'])->name('topics.pdf.destroy');
         Route::patch('/teme/{topic}/oslobodi', [TopicWorkflowController::class, 'release'])->name('topics.release');
+        Route::get('/teme/{topic}/odbrana', [DefenseController::class, 'edit'])->name('topics.defense.edit');
+        Route::put('/teme/{topic}/odbrana', [DefenseController::class, 'update'])->name('topics.defense.update');
 
         Route::middleware('role:super_admin')->prefix('admin')->name('admin.')->group(function () {
             Route::get('/', AdminDashboardController::class)->name('dashboard');

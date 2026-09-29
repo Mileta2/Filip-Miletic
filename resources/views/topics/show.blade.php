@@ -11,6 +11,7 @@
 @error('topic')<div class="alert alert-danger">{{ $message }}</div>@enderror
 @can('update', $topic)<a class="btn btn-primary w-100 mb-2" href="{{ route('topics.edit', $topic) }}">Izmeni temu</a>@if($topic->pdf_path)<form method="POST" action="{{ route('topics.pdf.destroy', $topic) }}">@csrf @method('DELETE')<button class="btn btn-link text-danger w-100">Obriši PDF</button></form>@endif @endcan
 @can('release', $topic)@if($topic->status === \App\Enums\TopicStatus::Reserved)<form method="POST" action="{{ route('topics.release', $topic) }}" onsubmit="return confirm('Da li želite da oslobodite temu?')">@csrf @method('PATCH')<button class="btn btn-outline-warning w-100 mt-2">Oslobodi temu</button></form>@endif @endcan
+@can('defend', $topic)@if($topic->status === \App\Enums\TopicStatus::Reserved)<a class="btn btn-success w-100 mt-2" href="{{ route('topics.defense.edit', $topic) }}">Pripremi odbranu</a>@endif @endcan
 @endauth
 @if($topic->committeeMembers->isNotEmpty())<div class="card border-0 shadow-sm mt-4"><div class="card-body p-4"><h2 class="h5">Komisija</h2>@foreach($topic->committeeMembers as $member)<div class="mb-2"><span class="small text-secondary d-block">{{ $member->role->label() }}</span>{{ $member->professor->name }}</div>@endforeach</div></div>@endif</aside></div>
 @endsection
