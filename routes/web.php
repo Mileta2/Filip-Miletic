@@ -1,18 +1,18 @@
 <?php
 
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ProfessorController as AdminProfessorController;
 use App\Http\Controllers\Admin\StudentController as AdminStudentController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\TopicController;
-use App\Http\Controllers\TopicWorkflowController;
 use App\Http\Controllers\DefenseController;
 use App\Http\Controllers\Professor\DashboardController as ProfessorDashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\TopicSelectionController;
+use App\Http\Controllers\TopicController;
+use App\Http\Controllers\TopicWorkflowController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
