@@ -12,6 +12,8 @@ body {
     min-height: 100vh;
     color: #1f2937;
     background: #f5f7fa;
+    display: flex;
+    flex-direction: column;
 }
 
 .btn-primary {
@@ -38,6 +40,62 @@ body {
 
 .topic-description {
     line-height: 1.75;
+}
+
+.navbar {
+    background: var(--brand-dark) !important;
+}
+
+.brand-mark {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: inline-grid;
+    place-items: center;
+    border-radius: .75rem;
+    color: var(--brand-dark);
+    background: #fff;
+}
+
+.brand-subtitle {
+    font-size: .7rem;
+    font-weight: 400;
+    opacity: .75;
+}
+
+.site-footer {
+    color: #cbd5e1;
+    background: var(--brand-dark);
+    font-size: .9rem;
+}
+
+.table thead th {
+    padding: 1rem;
+    color: #64748b;
+    background: #f8fafc;
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.table tbody td {
+    padding: 1rem;
+}
+
+@media (max-width: 575.98px) {
+    .brand-subtitle {
+        display: none;
+    }
+
+    .navbar-brand strong {
+        max-width: 190px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    main {
+        padding-top: 2rem !important;
+    }
 }
 
 @theme {
