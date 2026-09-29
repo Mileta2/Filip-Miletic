@@ -27,7 +27,11 @@
                                 <li class="nav-item"><a class="nav-link" href="{{ route('admin.students.index') }}">Studenti</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{{ route('admin.professors.index') }}">Profesori</a></li>
                             @elseif(auth()->user()->role === \App\Enums\UserRole::Professor)
+                                <li class="nav-item"><a class="nav-link" href="{{ route('topics.index', ['mine' => 1]) }}">Moje teme</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{{ route('topics.create') }}">Nova tema</a></li>
+                            @elseif(auth()->user()->role === \App\Enums\UserRole::Student)
+                                <li class="nav-item"><a class="nav-link" href="{{ route('topics.index', ['status' => 'available']) }}">Teme</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{{ route('student.topic') }}">Moja tema</a></li>
                             @endif
                         @endunless
                         <li class="nav-item">

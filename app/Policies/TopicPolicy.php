@@ -40,4 +40,9 @@ class TopicPolicy
             && $topic->mentor_id === $user->id
             && $topic->status === TopicStatus::Available;
     }
+
+    public function release(User $user, Topic $topic): bool
+    {
+        return $user->hasRole(UserRole::Professor) && $topic->mentor_id === $user->id;
+    }
 }

@@ -7,6 +7,10 @@ use App\Http\Controllers\Admin\ProfessorController as AdminProfessorController;
 use App\Http\Controllers\Admin\StudentController as AdminStudentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TopicController;
+use App\Http\Controllers\TopicWorkflowController;
+use App\Http\Controllers\Professor\DashboardController as ProfessorDashboardController;
+use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
+use App\Http\Controllers\Student\TopicSelectionController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
@@ -34,6 +38,7 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::delete('/teme/{topic}', [TopicController::class, 'destroy'])->name('topics.destroy');
         Route::get('/teme/{topic}/pdf', [TopicController::class, 'download'])->name('topics.pdf.download');
         Route::delete('/teme/{topic}/pdf', [TopicController::class, 'deletePdf'])->name('topics.pdf.destroy');
+        Route::patch('/teme/{topic}/oslobodi', [TopicWorkflowController::class, 'release'])->name('topics.release');
 
         Route::middleware('role:super_admin')->prefix('admin')->name('admin.')->group(function () {
             Route::get('/', AdminDashboardController::class)->name('dashboard');
@@ -47,9 +52,13 @@ Route::middleware(['auth', 'active'])->group(function () {
             Route::put('/profesori/{professor}/lozinka', [AdminProfessorController::class, 'resetPassword'])->name('professors.password');
             Route::patch('/profesori/{professor}/status', [AdminProfessorController::class, 'toggle'])->name('professors.toggle');
         });
-        Route::view('/profesor', 'dashboards.professor')
-            ->middleware('role:professor')->name('professor.dashboard');
-        Route::view('/student', 'dashboards.student')
-            ->middleware('role:student')->name('student.dashboard');
+        Route::middleware('role:professor')->prefix('profesor')->name('professor.')->group(function () {
+            Route::get('/', ProfessorDashboardController::class)->name('dashboard');
+        });
+        Route::middleware('role:student')->prefix('student')->name('student.')->group(function () {
+            Route::get('/', StudentDashboardController::class)->name('dashboard');
+            Route::get('/moja-tema', [StudentDashboardController::class, 'topic'])->name('topic');
+            Route::post('/teme/{topic}/izbor', [TopicSelectionController::class, 'store'])->name('topics.select');
+        });
     });
 });

@@ -1,5 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Profesor')
 @section('content')
-<h1>Profesorska kontrolna tabla</h1>
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4"><div><p class="text-primary fw-semibold mb-1">Profesor</p><h1 class="h2 mb-0">Moje teme i studenti</h1></div><a class="btn btn-primary" href="{{ route('topics.create') }}"><i class="bi bi-plus-lg"></i> Nova tema</a></div>
+<div class="row g-3 mb-4">@foreach($statistics as $label => $value)<div class="col-6 col-lg-3"><div class="card stat-card border-0 shadow-sm h-100"><div class="card-body"><div class="display-6 fw-bold text-primary">{{ $value }}</div><div class="text-secondary text-capitalize">{{ $label }}</div></div></div></div>@endforeach</div>
+<div class="card border-0 shadow-sm"><div class="card-header bg-white border-0 d-flex justify-content-between align-items-center p-4"><h2 class="h5 mb-0">Nedavne teme</h2><a href="{{ route('topics.index', ['mine' => 1]) }}">Prikaži sve</a></div><div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Tema</th><th>Status</th><th>Student</th><th></th></tr></thead><tbody>@forelse($topics as $topic)<tr><td><strong>{{ $topic->title }}</strong><br><small class="text-secondary">{{ $topic->type->label() }}</small></td><td><span class="badge {{ $topic->status->badgeClass() }}">{{ $topic->status->label() }}</span></td><td>{{ $topic->student?->name ?? 'Nije odabrana' }}</td><td class="text-end"><a class="btn btn-sm btn-outline-primary" href="{{ route('topics.show', $topic) }}">Detalji</a></td></tr>@empty<tr><td colspan="4" class="text-center text-secondary py-5">Trenutno nemate kreiranih tema.</td></tr>@endforelse</tbody></table></div></div>
 @endsection

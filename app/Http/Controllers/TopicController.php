@@ -24,11 +24,13 @@ class TopicController extends Controller
         $type = $forcedType?->value ?: $request->string('type')->toString();
         $status = $request->string('status')->toString();
         $search = trim($request->string('search')->toString());
+        $mine = $request->boolean('mine') && $request->user()?->hasRole(UserRole::Professor);
 
         $topics = Topic::query()
             ->with(['mentor.professorProfile', 'student.studentProfile'])
             ->when($type, fn (Builder $query) => $query->where('type', $type))
             ->when($status, fn (Builder $query) => $query->where('status', $status))
+            ->when($mine, fn (Builder $query) => $query->where('mentor_id', $request->user()->id))
             ->when($search, function (Builder $query) use ($search, $request) {
                 $query->where(function (Builder $query) use ($search, $request) {
                     $query->where('title', 'like', "%{$search}%")
@@ -44,7 +46,7 @@ class TopicController extends Controller
             ->paginate(9)
             ->withQueryString();
 
-        return view('topics.index', compact('topics', 'type', 'status', 'search'));
+        return view('topics.index', compact('topics', 'type', 'status', 'search', 'mine'));
     }
 
     public function undergraduate(Request $request): View
