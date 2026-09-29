@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -30,12 +31,17 @@ class PasswordController extends Controller
 
         $validated = $request->validate($rules);
 
-        $request->user()->update([
+        $user = $request->user();
+        $user->update([
             'password' => Hash::make($validated['password']),
             'must_change_password' => false,
         ]);
 
         $request->session()->regenerate();
+
+        if ($user->hasRole(UserRole::Student) && ! $user->studentProfile->date_of_birth) {
+            return redirect()->route('profile.edit')->with('success', 'Lozinka je promenjena. Dopunite svoj profil.');
+        }
 
         return redirect()->route('dashboard')->with('success', 'Lozinka je uspešno promenjena.');
     }

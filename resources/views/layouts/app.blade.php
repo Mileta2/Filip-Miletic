@@ -33,6 +33,7 @@
                                 <li class="nav-item"><a class="nav-link" href="{{ route('topics.index', ['status' => 'available']) }}">Teme</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{{ route('student.topic') }}">Moja tema</a></li>
                             @endif
+                            <li class="nav-item"><a class="nav-link" href="{{ route('profile.edit') }}">Profil</a></li>
                         @endunless
                         <li class="nav-item">
                             <form method="POST" action="{{ route('logout') }}">

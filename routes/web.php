@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\TopicWorkflowController;
 use App\Http\Controllers\Professor\DashboardController as ProfessorDashboardController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\TopicSelectionController;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,8 @@ Route::middleware(['auth', 'active'])->group(function () {
 
     Route::middleware('password.changed')->group(function () {
         Route::get('/kontrolna-tabla', DashboardController::class)->name('dashboard');
+        Route::get('/profil', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profil', [ProfileController::class, 'update'])->name('profile.update');
         Route::get('/nova-tema', [TopicController::class, 'create'])->name('topics.create');
         Route::post('/teme', [TopicController::class, 'store'])->name('topics.store');
         Route::get('/teme/{topic}/izmena', [TopicController::class, 'edit'])->name('topics.edit');
