@@ -1,59 +1,187 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem za izbor tema diplomskih i master radova
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Laravel web aplikacija za upravljanje temama, mentorstvima, izborom rada, komisijama i odbranama na fakultetu. Sistem ima javni katalog tema i odvojene funkcionalnosti za super administratora, profesora i studenta.
 
-## About Laravel
+## Mogućnosti
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- javni pregled diplomskih i master tema sa pretragom, filterima i stranicama;
+- bezbedna prijava bez javne registracije;
+- obavezna promena inicijalne ili resetovane lozinke;
+- upravljanje profesorima i studentima;
+- studentski i profesorski profil;
+- kreiranje i izmena tema sa privatnim PDF dokumentom;
+- bezbedan izbor slobodne teme kroz transakciju i zaključavanje reda;
+- tok statusa `Slobodna → Zauzeta → Odbranjena`;
+- oslobađanje teme samo od strane mentora ili administratora;
+- komisija sa predsednikom i jednim ili više članova;
+- kontrolne table i statistika prilagođene korisničkoj ulozi;
+- serverska autorizacija kroz middleware i policy klase;
+- responzivan interfejs na srpskom jeziku.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tehnologije
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Laravel 12 i PHP 8.3;
+- Blade, Bootstrap 5, Bootstrap Icons i Vite;
+- MariaDB 11.4;
+- Nginx;
+- Docker i Docker Compose;
+- PHPUnit.
 
-## Learning Laravel
+## Korisničke uloge
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+**Super administrator** upravlja svim korisnicima i temama, resetuje lozinke, prati statistiku i može da vodi proces odbrane.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**Profesor** upravlja svojim temama, vidi studente, oslobađa zauzetu temu, definiše komisiju i evidentira odbranu.
 
-## Laravel Sponsors
+**Student** dopunjava profil, pregleda teme odgovarajućeg nivoa, bira jednu slobodnu temu i prati njen status.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Sistemski zahtevi
 
-### Premium Partners
+Za preporučeni način pokretanja potrebni su samo:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- Git;
+- Docker Engine 24 ili noviji;
+- Docker Compose v2.
 
-## Contributing
+Lokalna instalacija PHP-a, Composer-a, Node-a i baze nije potrebna.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Instalacija kroz Docker
 
-## Code of Conduct
+Klonirajte repository i uđite u direktorijum projekta:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+git clone <adresa-repozitorijuma>
+cd <direktorijum-projekta>
+```
 
-## Security Vulnerabilities
+Kopirajte razvojnu konfiguraciju:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+cp .env.example .env
+```
 
-## License
+Podignite PHP, Nginx i MariaDB servise:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+docker compose up -d --build
+```
+
+Instalirajte PHP zavisnosti i napravite aplikacioni ključ:
+
+```bash
+docker compose exec app composer install
+docker compose exec app php artisan key:generate
+```
+
+Kreirajte bazu i demo podatke:
+
+```bash
+docker compose exec app php artisan migrate --seed
+```
+
+Instalirajte i kompajlirajte frontend:
+
+```bash
+docker compose run --rm node npm install
+docker compose run --rm node npm run build
+```
+
+Aplikacija je zatim dostupna na [http://localhost:8080](http://localhost:8080). Port se može promeniti kroz `APP_PORT` u `.env` fajlu.
+
+Sve navedene komande mogu se izvršiti i odjednom:
+
+```bash
+make install
+```
+
+## Podešavanje okruženja
+
+Razvojne vrednosti za bazu već postoje u `.env.example`. Po potrebi promenite:
+
+```dotenv
+APP_PORT=8080
+APP_FACULTY_NAME="Fakultet informacionih tehnologija"
+DB_DATABASE=diplomski_radovi
+DB_USERNAME=laravel
+DB_PASSWORD=laravel
+DB_ROOT_PASSWORD=root
+```
+
+`.env` je ignorisan u Git-u i nikada ne treba da se pošalje u repository.
+
+## Demo nalozi
+
+Demo podaci su namenjeni isključivo lokalnom razvojnom okruženju.
+
+| Uloga | Email | Lozinka |
+|---|---|---|
+| Super administrator | `admin@example.test` | `Lozinka123` |
+| Profesor | `profesor@example.test` | `Lozinka123` |
+| Student | `student@example.test` | `Lozinka123` |
+
+Seeder pravi ukupno 5 profesora, 10 studenata, 10 diplomskih i 10 master tema.
+
+## Korisne komande
+
+```bash
+make up
+make down
+make migrate
+make seed
+make test
+make logs
+```
+
+Odgovarajuće Docker Compose komande mogu se koristiti i direktno.
+
+## Testovi
+
+Kompletan test paket pokreće se naredbom:
+
+```bash
+docker compose exec app php artisan test
+```
+
+Testovi koriste SQLite bazu u memoriji i ne menjaju razvojne podatke. Pokrivaju autentifikaciju, deaktivirane naloge, promenu inicijalne lozinke, autorizaciju uloga, administraciju korisnika, teme, izbor teme, zabrane izbora, oslobađanje, odbranu, komisiju i PDF validaciju.
+
+## Struktura baze
+
+Glavne tabele su:
+
+- `users` — autentifikacija, uloga i status naloga;
+- `student_profiles` — indeks, nivo studija i dozvoljeni profilni podaci;
+- `professor_profiles` — zvanje, katedra i oblast interesovanja;
+- `topics` — tema, tip, status, mentor, student, PDF i datumi;
+- `defense_committee_members` — normalizovani članovi komisije i njihove uloge.
+
+Strani ključevi sprečavaju uklanjanje korisnika koji pripada istorijskom radu. Takve naloge treba deaktivirati umesto brisati.
+
+## Bezbednost i dokumenti
+
+- lozinke se hash-uju Laravel mehanizmom;
+- sve izmene koriste CSRF zaštitu i serversku validaciju;
+- pristup se proverava middleware-om i policy klasama;
+- deaktivirani nalog ne može da se prijavi;
+- PDF dokumenti se čuvaju u privatnom Laravel skladištu;
+- rezervacija teme koristi transakciju i `lockForUpdate`;
+- `.env`, `vendor`, `node_modules`, build fajlovi i privatni upload-i nisu deo Git istorije.
+
+## Git organizacija
+
+Glavna stabilna grana je `main`. Commitovi predstavljaju završene funkcionalne celine i napisani su na srpskom jeziku. Pre slanja promena proverite:
+
+```bash
+git diff
+git status
+git log --oneline
+```
+
+## Ponovno kreiranje razvojne baze
+
+Ako želite potpuno svež skup demo podataka:
+
+```bash
+docker compose exec app php artisan migrate:fresh --seed
+```
+
+Ova komanda briše sve postojeće podatke u razvojnoj bazi.
