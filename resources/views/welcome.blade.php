@@ -3,6 +3,11 @@
 @section('title', 'Početna')
 
 @section('content')
+@php
+    $studentStudyLevel = auth()->check() && auth()->user()->hasRole(\App\Enums\UserRole::Student)
+        ? auth()->user()->studentProfile?->study_level
+        : null;
+@endphp
 <section class="hero-panel rounded-4 p-4 p-lg-5 mb-5 text-white overflow-hidden">
     <div class="row align-items-center g-4">
         <div class="col-lg-8 position-relative z-1">
@@ -20,7 +25,11 @@
     </div>
 </section>
 <div class="row g-4">
-    <div class="col-md-6"><a class="topic-type-card card border-0 shadow-sm h-100 text-decoration-none" href="{{ route('topics.undergraduate') }}"><div class="card-body p-4"><i class="bi bi-journal-text fs-1 text-primary"></i><h2 class="h4 mt-3 text-dark">Diplomski radovi</h2><p class="text-secondary mb-0">Pregled tema za diplomske radove studenata osnovnih studija.</p></div></a></div>
-    <div class="col-md-6"><a class="topic-type-card card border-0 shadow-sm h-100 text-decoration-none" href="{{ route('topics.master') }}"><div class="card-body p-4"><i class="bi bi-lightbulb fs-1 text-danger"></i><h2 class="h4 mt-3 text-dark">Master radovi</h2><p class="text-secondary mb-0">Pregled tema za završne radove studenata master studija.</p></div></a></div>
+    @if(! $studentStudyLevel || $studentStudyLevel === \App\Enums\StudyLevel::Undergraduate)
+        <div class="{{ $studentStudyLevel ? 'col-lg-8 mx-auto' : 'col-md-6' }}"><a class="topic-type-card topic-type-card-undergraduate card shadow-sm h-100 text-decoration-none" href="{{ route('topics.undergraduate') }}"><div class="card-body p-4"><i class="bi bi-journal-text fs-1 text-primary"></i><h2 class="h4 mt-3 text-dark">Diplomski radovi</h2><p class="text-secondary mb-0">Pregled tema za diplomske radove studenata osnovnih studija.</p></div></a></div>
+    @endif
+    @if(! $studentStudyLevel || $studentStudyLevel === \App\Enums\StudyLevel::Master)
+        <div class="{{ $studentStudyLevel ? 'col-lg-8 mx-auto' : 'col-md-6' }}"><a class="topic-type-card topic-type-card-master card shadow-sm h-100 text-decoration-none" href="{{ route('topics.master') }}"><div class="card-body p-4"><i class="bi bi-lightbulb fs-1 text-danger"></i><h2 class="h4 mt-3 text-dark">Master radovi</h2><p class="text-secondary mb-0">Pregled tema za završne radove studenata master studija.</p></div></a></div>
+    @endif
 </div>
 @endsection

@@ -31,7 +31,6 @@ class ProfileController extends Controller
                     'phone' => ['nullable', 'string', 'max:30'],
                     'city' => ['nullable', 'string', 'max:255'],
                     'address' => ['nullable', 'string', 'max:255'],
-                    'study_year' => ['nullable', 'integer', 'min:1', 'max:6'],
                 ]);
                 $user->studentProfile->update($data);
             }

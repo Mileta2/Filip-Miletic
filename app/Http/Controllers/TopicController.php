@@ -21,7 +21,10 @@ class TopicController extends Controller
 {
     public function index(Request $request, ?TopicType $forcedType = null): View
     {
-        $type = $forcedType?->value ?: $request->string('type')->toString();
+        $studentTopicType = $request->user()?->hasRole(UserRole::Student)
+            ? TopicType::from($request->user()->studentProfile->study_level->value)
+            : null;
+        $type = $studentTopicType?->value ?: ($forcedType?->value ?: $request->string('type')->toString());
         $status = $request->string('status')->toString();
         $search = trim($request->string('search')->toString());
         $mine = $request->boolean('mine') && $request->user()?->hasRole(UserRole::Professor);
@@ -50,13 +53,21 @@ class TopicController extends Controller
         return view('topics.index', compact('topics', 'type', 'status', 'search', 'mine'));
     }
 
-    public function undergraduate(Request $request): View
+    public function undergraduate(Request $request): View|RedirectResponse
     {
+        if ($redirect = $this->redirectStudentToOwnCatalog($request, TopicType::Undergraduate)) {
+            return $redirect;
+        }
+
         return $this->index($request, TopicType::Undergraduate);
     }
 
-    public function master(Request $request): View
+    public function master(Request $request): View|RedirectResponse
     {
+        if ($redirect = $this->redirectStudentToOwnCatalog($request, TopicType::Master)) {
+            return $redirect;
+        }
+
         return $this->index($request, TopicType::Master);
     }
 
@@ -169,5 +180,22 @@ class TopicController extends Controller
             ->where('is_active', true)
             ->orderBy('name')
             ->get();
+    }
+
+    private function redirectStudentToOwnCatalog(Request $request, TopicType $requestedType): ?RedirectResponse
+    {
+        if (! $request->user()?->hasRole(UserRole::Student)) {
+            return null;
+        }
+
+        $studentType = TopicType::from($request->user()->studentProfile->study_level->value);
+
+        if ($studentType === $requestedType) {
+            return null;
+        }
+
+        return redirect()->route(
+            $studentType === TopicType::Undergraduate ? 'topics.undergraduate' : 'topics.master'
+        );
     }
 }

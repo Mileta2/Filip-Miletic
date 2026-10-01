@@ -8,6 +8,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
+    @php
+        $navigationStudyLevel = auth()->check() && auth()->user()->hasRole(\App\Enums\UserRole::Student)
+            ? auth()->user()->studentProfile?->study_level
+            : null;
+    @endphp
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="{{ route('home') }}" aria-label="{{ config('app.faculty_name') }} — početna">
@@ -19,8 +24,12 @@
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
                     <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Početna</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('topics.undergraduate') }}">Diplomski</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('topics.master') }}">Master</a></li>
+                    @if(! $navigationStudyLevel || $navigationStudyLevel === \App\Enums\StudyLevel::Undergraduate)
+                        <li class="nav-item"><a class="nav-link" href="{{ route('topics.undergraduate') }}">Diplomski</a></li>
+                    @endif
+                    @if(! $navigationStudyLevel || $navigationStudyLevel === \App\Enums\StudyLevel::Master)
+                        <li class="nav-item"><a class="nav-link" href="{{ route('topics.master') }}">Master</a></li>
+                    @endif
                     @auth
                         @unless(auth()->user()->must_change_password)
                             <li class="nav-item"><a class="nav-link" href="{{ route('dashboard') }}">Kontrolna tabla</a></li>
