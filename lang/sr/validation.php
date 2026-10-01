@@ -40,6 +40,7 @@ return [
         'current_password' => 'trenutna lozinka',
         'index_number' => 'broj indeksa',
         'study_level' => 'nivo studija',
+        'study_year' => 'godina studija',
         'title' => 'naslov',
         'description' => 'opis',
         'type' => 'vrsta rada',

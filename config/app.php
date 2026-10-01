@@ -56,6 +56,8 @@ return [
 
     'faculty_name' => env('APP_FACULTY_NAME', 'Fakultet tehničkih nauka'),
 
+    'email_domain' => env('APP_EMAIL_DOMAIN', 'ftnkm.rs'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

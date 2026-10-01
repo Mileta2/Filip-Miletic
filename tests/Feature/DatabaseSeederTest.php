@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Enums\TopicType;
 use App\Models\Topic;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -48,5 +49,6 @@ class DatabaseSeederTest extends TestCase
 
         $this->assertSame(30, Topic::where('type', TopicType::Undergraduate)->count());
         $this->assertSame(10, Topic::where('type', TopicType::Master)->count());
+        $this->assertSame(0, User::where('email', 'not like', '%@ftnkm.rs')->count());
     }
 }

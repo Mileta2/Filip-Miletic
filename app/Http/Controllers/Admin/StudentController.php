@@ -56,6 +56,7 @@ class StudentController extends Controller
             $student->studentProfile()->create([
                 'index_number' => $data['index_number'],
                 'study_level' => $data['study_level'],
+                'study_year' => $data['study_year'],
             ]);
 
             return $student;
@@ -93,6 +94,7 @@ class StudentController extends Controller
             $student->studentProfile->update([
                 'index_number' => $data['index_number'],
                 'study_level' => $data['study_level'],
+                'study_year' => $data['study_year'],
             ]);
         });
 

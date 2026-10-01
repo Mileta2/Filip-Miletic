@@ -17,7 +17,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'email' => fake()->unique()->bothify('korisnik-####-????').'@ftnkm.rs',
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'role' => UserRole::Student,
@@ -54,6 +54,7 @@ class UserFactory extends Factory
             ->afterCreating(fn (User $user) => $user->studentProfile()->create([
                 'index_number' => fake()->unique()->numerify('IT ####/###'),
                 'study_level' => $level,
+                'study_year' => 1,
             ]));
     }
 }

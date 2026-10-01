@@ -9,6 +9,7 @@ Laravel web aplikacija za upravljanje temama, mentorstvima, izborom rada, komisi
 - obavezna promena inicijalne ili resetovane lozinke;
 - upravljanje profesorima i studentima;
 - studentski i profesorski profil;
+- institucionalne email adrese na domenu `@ftnkm.rs`;
 - kreiranje i izmena tema sa privatnim PDF dokumentom;
 - bezbedan izbor slobodne teme kroz transakciju i zaključavanje reda;
 - tok statusa `Slobodna → Zauzeta → Odbranjena`;
@@ -100,7 +101,8 @@ Razvojne vrednosti za bazu već postoje u `.env.example`. Po potrebi promenite:
 
 ```dotenv
 APP_PORT=8080
-APP_FACULTY_NAME="Fakultet informacionih tehnologija"
+APP_FACULTY_NAME="Fakultet tehničkih nauka"
+APP_EMAIL_DOMAIN="ftnkm.rs"
 DB_DATABASE=diplomski_radovi
 DB_USERNAME=laravel
 DB_PASSWORD=laravel
@@ -115,11 +117,11 @@ Demo podaci su namenjeni isključivo lokalnom razvojnom okruženju.
 
 | Uloga | Email | Lozinka |
 |---|---|---|
-| Super administrator | `admin@example.test` | `Lozinka123` |
-| Profesor | `profesor@example.test` | `Lozinka123` |
-| Student | `student@example.test` | `Lozinka123` |
+| Super administrator | `admin@ftnkm.rs` | `Lozinka123` |
+| Profesor | `petar.milic@ftnkm.rs` | `Lozinka123` |
+| Student | `ana.nikolic.it-2021-001@ftnkm.rs` | `Lozinka123` |
 
-Seeder pravi ukupno 5 profesora, 10 studenata, 10 diplomskih i 10 master tema.
+Seeder pravi ukupno 6 profesora, 10 studenata, 30 diplomskih i 10 master tema.
 
 ## Korisne komande
 

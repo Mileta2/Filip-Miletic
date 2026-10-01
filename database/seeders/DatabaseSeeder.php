@@ -9,6 +9,7 @@ use App\Enums\TopicType;
 use App\Enums\UserRole;
 use App\Models\Topic;
 use App\Models\User;
+use App\Support\InstitutionalEmail;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -20,7 +21,7 @@ class DatabaseSeeder extends Seeder
     {
         User::create([
             'name' => 'Sistemski Administrator',
-            'email' => 'admin@example.test',
+            'email' => 'admin@ftnkm.rs',
             'password' => 'Lozinka123',
             'role' => UserRole::SuperAdmin,
             'must_change_password' => false,
@@ -30,32 +31,32 @@ class DatabaseSeeder extends Seeder
         $professorData = [
             'petar-milic' => [
                 'name' => 'Petar Milić',
-                'email' => 'petar.milic@example.test',
+                'email' => 'petar.milic@ftnkm.rs',
                 'area' => 'Računarstvo u oblaku, operativni sistemi, veb tehnologije, elektronska uprava i računarske mreže',
             ],
             'branimir-jaksic' => [
                 'name' => 'Branimir Jakšić',
-                'email' => 'branimir.jaksic@example.test',
+                'email' => 'branimir.jaksic@ftnkm.rs',
                 'area' => 'Programiranje u jezicima C i Python',
             ],
             'sinisa-ilic' => [
                 'name' => 'Siniša Ilić',
-                'email' => 'sinisa.ilic@example.test',
+                'email' => 'sinisa.ilic@ftnkm.rs',
                 'area' => 'Baze podataka, informacioni sistemi, bezbednost komunikacija i računarstvo u biomedicini',
             ],
             'dragisa-miljkovic' => [
                 'name' => 'Dragiša Miljković',
-                'email' => 'dragisa.miljkovic@example.test',
+                'email' => 'dragisa.miljkovic@ftnkm.rs',
                 'area' => 'Programiranje mobilnih aplikacija',
             ],
             'nenad-jovanovic' => [
                 'name' => 'Nenad Jovanović',
-                'email' => 'nenad.jovanovic@example.test',
+                'email' => 'nenad.jovanovic@ftnkm.rs',
                 'area' => 'Internet aplikacije, objektno orijentisano i distribuirano programiranje',
             ],
             'dragana-radosavljevic' => [
                 'name' => 'Dragana Radosavljević',
-                'email' => 'dragana.radosavljevic@example.test',
+                'email' => 'dragana.radosavljevic@ftnkm.rs',
                 'area' => 'Istraživanje podataka i infrastruktura za elektronsko poslovanje',
             ],
         ];
@@ -84,16 +85,20 @@ class DatabaseSeeder extends Seeder
         ];
         $students = collect($studentNames)->map(function (string $name, int $index) {
             $level = $index < 5 ? StudyLevel::Undergraduate : StudyLevel::Master;
+            $indexNumber = 'IT '.(2021 + ($index % 3)).'/'.str_pad((string) ($index + 1), 3, '0', STR_PAD_LEFT);
+            $nameParts = explode(' ', $name);
+            $firstName = array_shift($nameParts);
+            $lastName = array_pop($nameParts);
             $student = User::create([
                 'name' => $name,
-                'email' => $index === 0 ? 'student@example.test' : 'student'.($index + 1).'@example.test',
+                'email' => InstitutionalEmail::forStudent($firstName, $lastName, $indexNumber),
                 'password' => 'Lozinka123',
                 'role' => UserRole::Student,
                 'must_change_password' => false,
                 'is_active' => true,
             ]);
             $student->studentProfile()->create([
-                'index_number' => 'IT '.(2021 + ($index % 3)).'/'.str_pad((string) ($index + 1), 3, '0', STR_PAD_LEFT),
+                'index_number' => $indexNumber,
                 'study_level' => $level,
                 'date_of_birth' => now()->subYears(22 + ($index % 4))->subDays($index * 17)->toDateString(),
                 'city' => ['Beograd', 'Novi Sad', 'Niš', 'Kragujevac', 'Čačak'][$index % 5],
