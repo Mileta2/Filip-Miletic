@@ -2,31 +2,63 @@
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 
 :root {
-    --bs-primary: #1976c9;
-    --bs-primary-rgb: 25, 118, 201;
-    --brand-dark: #0b3154;
-    --brand-red: #cf1735;
+    --ftn-blue: #1178d5;
+    --ftn-navy: #062949;
+    --ftn-red: #c41c35;
+    --bs-primary: var(--ftn-blue);
+    --bs-primary-rgb: 17, 120, 213;
+    --bs-danger: var(--ftn-red);
+    --bs-danger-rgb: 196, 28, 53;
+    --brand-dark: var(--ftn-navy);
+    --brand-red: var(--ftn-red);
 }
 
 body {
     min-height: 100vh;
     color: #1f2937;
-    background: #f5f7fa;
+    background: #f3f7fb;
     display: flex;
     flex-direction: column;
 }
 
 .btn-primary {
-    --bs-btn-bg: #1976c9;
-    --bs-btn-border-color: #1976c9;
-    --bs-btn-hover-bg: #0b5fa5;
-    --bs-btn-hover-border-color: #0b5fa5;
+    --bs-btn-bg: var(--ftn-blue);
+    --bs-btn-border-color: var(--ftn-blue);
+    --bs-btn-hover-bg: #0d64b3;
+    --bs-btn-hover-border-color: #0d64b3;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--ftn-blue);
+    --bs-btn-border-color: var(--ftn-blue);
+    --bs-btn-hover-bg: var(--ftn-blue);
+    --bs-btn-hover-border-color: var(--ftn-blue);
+}
+
+.btn-danger {
+    --bs-btn-bg: var(--ftn-red);
+    --bs-btn-border-color: var(--ftn-red);
+    --bs-btn-hover-bg: #a8172d;
+    --bs-btn-hover-border-color: #a8172d;
+}
+
+.btn-outline-danger {
+    --bs-btn-color: var(--ftn-red);
+    --bs-btn-border-color: var(--ftn-red);
+    --bs-btn-hover-bg: var(--ftn-red);
+    --bs-btn-hover-border-color: var(--ftn-red);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: rgb(17 120 213 / 65%);
+    box-shadow: 0 0 0 .25rem rgb(17 120 213 / 16%);
 }
 
 .hero-panel {
     position: relative;
     isolation: isolate;
-    background: linear-gradient(135deg, #0b3154 0%, #1976c9 72%, #2c8bd9 100%);
+    background: linear-gradient(135deg, var(--ftn-navy) 0%, var(--ftn-blue) 72%, #3796e7 100%);
 }
 
 .hero-panel::after {
@@ -52,11 +84,21 @@ body {
     transform: translateY(-4px);
 }
 
+.topic-type-card {
+    border: 1px solid #dbe8f3;
+    border-top: .25rem solid var(--ftn-blue);
+}
+
+.topic-type-card-master {
+    border-top-color: var(--ftn-red);
+}
+
 .topic-description {
     line-height: 1.75;
 }
 
 .navbar {
+    border-bottom: 3px solid var(--ftn-red);
     background: var(--brand-dark) !important;
 }
 
@@ -87,6 +129,7 @@ body {
 }
 
 .site-footer {
+    border-top: 3px solid var(--ftn-blue);
     color: #cbd5e1;
     background: var(--brand-dark);
     font-size: .9rem;
