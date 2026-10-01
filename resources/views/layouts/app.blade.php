@@ -11,9 +11,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="{{ route('home') }}" aria-label="{{ config('app.faculty_name') }} — početna">
-                <span class="brand-logo-frame">
-                    <img class="brand-logo" src="{{ asset('images/logo-ftn-icon.png') }}" alt="">
-                </span>
+                <img class="brand-logo" src="{{ asset('images/logo-ftn-icon.png') }}" width="36" height="36" style="width: 36px !important; height: 36px !important;" alt="">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
                 <span class="navbar-toggler-icon"></span>

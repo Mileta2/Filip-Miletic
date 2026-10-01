@@ -64,36 +64,26 @@ body {
     padding-block: 0;
 }
 
-.brand-logo-frame {
-    width: 3.25rem;
-    height: 3.25rem;
-    display: grid;
-    place-items: center;
-    padding: .4rem;
+.brand-logo {
+    display: block;
+    padding: .3rem;
+    box-sizing: border-box;
+    object-fit: contain;
     border: 1px solid rgb(255 255 255 / 35%);
-    border-radius: 1rem;
+    border-radius: .75rem;
     background: #fff;
     box-shadow: 0 .35rem .9rem rgb(0 0 0 / 18%);
 }
 
-.brand-logo,
 .hero-logo {
-    width: 100%;
-    height: 100%;
-    display: block;
+    display: inline-block;
+    padding: .7rem;
+    box-sizing: border-box;
     object-fit: contain;
-}
-
-.hero-logo-shell {
-    width: clamp(9rem, 18vw, 13rem);
-    aspect-ratio: 1;
-    display: inline-grid;
-    place-items: center;
-    padding: 1.25rem;
     border: 1px solid rgb(255 255 255 / 28%);
-    border-radius: 2rem;
+    border-radius: 1.35rem;
     background: rgb(255 255 255 / 92%);
-    box-shadow: 0 1.25rem 2.75rem rgb(4 24 43 / 25%);
+    box-shadow: 0 .85rem 1.75rem rgb(4 24 43 / 22%);
 }
 
 .site-footer {
@@ -116,18 +106,6 @@ body {
 }
 
 @media (max-width: 575.98px) {
-    .brand-logo-frame {
-        width: 3rem;
-        height: 3rem;
-        border-radius: .85rem;
-    }
-
-    .hero-logo-shell {
-        width: 9rem;
-        padding: 1rem;
-        border-radius: 1.5rem;
-    }
-
     main {
         padding-top: 2rem !important;
     }

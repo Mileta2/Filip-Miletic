@@ -15,9 +15,7 @@
             </div>
         </div>
         <div class="col-lg-4 text-center position-relative z-1">
-            <div class="hero-logo-shell">
-                <img class="hero-logo" src="{{ asset('images/logo-ftn-icon.png') }}" alt="Logo Fakulteta tehničkih nauka">
-            </div>
+            <img class="hero-logo" src="{{ asset('images/logo-ftn-icon.png') }}" width="96" height="96" style="width: 96px !important; height: 96px !important;" alt="Logo Fakulteta tehničkih nauka">
         </div>
     </div>
 </section>
