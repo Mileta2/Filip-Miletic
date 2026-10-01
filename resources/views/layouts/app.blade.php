@@ -11,7 +11,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('home') }}">
-                <span class="brand-mark"><i class="bi bi-mortarboard-fill"></i></span>
+                <img class="brand-logo" src="{{ asset('images/logo-ftn.png') }}" alt="Logo Fakulteta tehničkih nauka">
                 <span><strong class="d-block lh-1">{{ config('app.faculty_name') }}</strong><small class="brand-subtitle">Sistem za izbor tema</small></span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">

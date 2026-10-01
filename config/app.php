@@ -54,7 +54,7 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
-    'faculty_name' => env('APP_FACULTY_NAME', 'Fakultet informacionih tehnologija'),
+    'faculty_name' => env('APP_FACULTY_NAME', 'Fakultet tehničkih nauka'),
 
     /*
     |--------------------------------------------------------------------------
