@@ -15,12 +15,19 @@ class TopicWorkflowTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_osnovne_studije_imaju_odgovarajucu_oznaku(): void
+    {
+        $this->assertSame('Osnovne studije', StudyLevel::Undergraduate->label());
+        $this->assertSame('Diplomski rad', TopicType::Undergraduate->label());
+    }
+
     public function test_profesor_moze_da_kreira_i_izmeni_svoju_temu(): void
     {
         $professor = User::factory()->professor()->create();
 
         $this->actingAs($professor)->post(route('topics.store'), [
             'title' => 'Nova tema za diplomski rad',
+            'course' => 'Programiranje internet aplikacija',
             'description' => 'Dovoljno detaljan opis nove teme za potrebe automatskog testa.',
             'type' => TopicType::Undergraduate->value,
         ])->assertRedirect();
@@ -31,6 +38,7 @@ class TopicWorkflowTest extends TestCase
 
         $this->actingAs($professor)->put(route('topics.update', $topic), [
             'title' => 'Izmenjen naslov teme',
+            'course' => 'OOP 2',
             'description' => 'Dovoljno detaljan izmenjeni opis teme za potrebe automatskog testa.',
             'type' => TopicType::Undergraduate->value,
         ])->assertRedirect(route('topics.show', $topic));
@@ -45,6 +53,7 @@ class TopicWorkflowTest extends TestCase
 
         $this->actingAs($other)->put(route('topics.update', $topic), [
             'title' => 'Nedozvoljena izmena',
+            'course' => 'Operativni sistemi 1',
             'description' => 'Ovaj sadržaj ne treba da bude sačuvan u bazi podataka.',
             'type' => TopicType::Undergraduate->value,
         ])->assertForbidden();
@@ -105,6 +114,16 @@ class TopicWorkflowTest extends TestCase
         $this->assertSame(TopicStatus::Available, $topic->fresh()->status);
     }
 
+    public function test_student_osnovnih_studija_ne_moze_da_izabere_master_temu(): void
+    {
+        $student = User::factory()->student(StudyLevel::Undergraduate)->create();
+        $topic = Topic::factory()->create(['type' => TopicType::Master]);
+
+        $this->actingAs($student)->post(route('student.topics.select', $topic))
+            ->assertSessionHasErrors('topic');
+        $this->assertSame(TopicStatus::Available, $topic->fresh()->status);
+    }
+
     public function test_mentor_moze_da_oslobodi_zauzetu_temu(): void
     {
         $mentor = User::factory()->professor()->create();
@@ -151,6 +170,7 @@ class TopicWorkflowTest extends TestCase
 
         $this->actingAs($professor)->post(route('topics.store'), [
             'title' => 'Tema sa neispravnim dokumentom',
+            'course' => 'Web dizajn',
             'description' => 'Opis teme koji je dovoljno dug za uspešnu validaciju ostalih polja.',
             'type' => TopicType::Undergraduate->value,
             'pdf' => UploadedFile::fake()->create('dokument.txt', 10, 'text/plain'),

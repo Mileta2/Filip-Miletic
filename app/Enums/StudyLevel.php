@@ -10,7 +10,7 @@ enum StudyLevel: string
     public function label(): string
     {
         return match ($this) {
-            self::Undergraduate => 'Diplomske studije',
+            self::Undergraduate => 'Osnovne studije',
             self::Master => 'Master studije',
         };
     }

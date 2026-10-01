@@ -34,6 +34,7 @@ class TopicController extends Controller
             ->when($search, function (Builder $query) use ($search, $request) {
                 $query->where(function (Builder $query) use ($search, $request) {
                     $query->where('title', 'like', "%{$search}%")
+                        ->orWhere('course', 'like', "%{$search}%")
                         ->orWhereHas('mentor', fn (Builder $query) => $query->where('name', 'like', "%{$search}%"));
 
                     if ($request->user()?->hasRole(UserRole::SuperAdmin) || $request->user()?->hasRole(UserRole::Professor)) {
@@ -111,7 +112,7 @@ class TopicController extends Controller
             : $data['mentor_id'];
 
         if ($topic->status !== TopicStatus::Available) {
-            unset($data['type'], $data['mentor_id']);
+            unset($data['course'], $data['type'], $data['mentor_id']);
         }
 
         if ($request->hasFile('pdf')) {

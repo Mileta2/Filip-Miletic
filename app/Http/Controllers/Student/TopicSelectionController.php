@@ -16,6 +16,7 @@ class TopicSelectionController extends Controller
     public function store(Request $request, Topic $topic): RedirectResponse
     {
         DB::transaction(function () use ($request, $topic) {
+            // zaključavanje redova sprečava istovremenu rezervaciju iste teme
             $student = User::whereKey($request->user()->id)->lockForUpdate()->firstOrFail();
             $lockedTopic = Topic::whereKey($topic->id)->lockForUpdate()->firstOrFail();
 
@@ -28,7 +29,9 @@ class TopicSelectionController extends Controller
             }
 
             if ($lockedTopic->type->value !== $student->studentProfile->study_level->value) {
-                throw ValidationException::withMessages(['topic' => 'Tema ne odgovara vašem nivou studija.']);
+                throw ValidationException::withMessages([
+                    'topic' => 'Student osnovnih studija može da bira samo temu za diplomski rad, a student master studija samo temu za master rad.',
+                ]);
             }
 
             $lockedTopic->update([

@@ -16,6 +16,7 @@ class Topic extends Model
 
     protected $fillable = [
         'title',
+        'course',
         'description',
         'type',
         'status',

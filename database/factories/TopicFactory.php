@@ -16,6 +16,7 @@ class TopicFactory extends Factory
     {
         return [
             'title' => fake()->sentence(6),
+            'course' => 'Programiranje internet aplikacija',
             'description' => fake()->paragraphs(2, true),
             'type' => TopicType::Undergraduate,
             'status' => TopicStatus::Available,

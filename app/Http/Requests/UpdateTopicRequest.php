@@ -18,6 +18,7 @@ class UpdateTopicRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
+            'course' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'min:20', 'max:10000'],
             'type' => ['required', Rule::enum(TopicType::class)],
             'mentor_id' => [
