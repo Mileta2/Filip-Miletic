@@ -26,14 +26,36 @@ class TopicController extends Controller
             : null;
         $type = $studentTopicType?->value ?: ($forcedType?->value ?: $request->string('type')->toString());
         $status = $request->string('status')->toString();
+        $mentorId = $request->integer('mentor_id') ?: null;
+        $course = trim($request->string('course')->toString());
         $search = trim($request->string('search')->toString());
         $mine = $request->boolean('mine') && $request->user()?->hasRole(UserRole::Professor);
 
-        $topics = Topic::query()
-            ->with(['mentor.professorProfile', 'student.studentProfile'])
+        $baseTopics = Topic::query()
             ->when($type, fn (Builder $query) => $query->where('type', $type))
+            ->when($mine, fn (Builder $query) => $query->where('mentor_id', $request->user()->id));
+
+        $courses = (clone $baseTopics)
+            ->whereNotNull('course')
+            ->where('course', '!=', '')
+            ->distinct()
+            ->orderBy('course')
+            ->pluck('course');
+
+        $professors = User::query()
+            ->where('role', UserRole::Professor)
+            ->whereHas('mentoredTopics', function (Builder $query) use ($type, $mine, $request) {
+                $query->when($type, fn (Builder $query) => $query->where('type', $type))
+                    ->when($mine, fn (Builder $query) => $query->where('mentor_id', $request->user()->id));
+            })
+            ->orderBy('name')
+            ->get();
+
+        $topics = $baseTopics
+            ->with(['mentor.professorProfile', 'student.studentProfile'])
             ->when($status, fn (Builder $query) => $query->where('status', $status))
-            ->when($mine, fn (Builder $query) => $query->where('mentor_id', $request->user()->id))
+            ->when($mentorId, fn (Builder $query) => $query->where('mentor_id', $mentorId))
+            ->when($course, fn (Builder $query) => $query->where('course', $course))
             ->when($search, function (Builder $query) use ($search, $request) {
                 $query->where(function (Builder $query) use ($search, $request) {
                     $query->where('title', 'like', "%{$search}%")
@@ -50,7 +72,17 @@ class TopicController extends Controller
             ->paginate(9)
             ->withQueryString();
 
-        return view('topics.index', compact('topics', 'type', 'status', 'search', 'mine'));
+        return view('topics.index', compact(
+            'topics',
+            'type',
+            'status',
+            'mentorId',
+            'course',
+            'search',
+            'mine',
+            'professors',
+            'courses',
+        ));
     }
 
     public function undergraduate(Request $request): View|RedirectResponse

@@ -49,7 +49,7 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::middleware('role:super_admin')->prefix('admin')->name('admin.')->group(function () {
             Route::get('/', AdminDashboardController::class)->name('dashboard');
             Route::resource('studenti', AdminStudentController::class)
-                ->parameters(['studenti' => 'student'])->names('students')->except('destroy');
+                ->parameters(['studenti' => 'student'])->names('students');
             Route::put('/studenti/{student}/lozinka', [AdminStudentController::class, 'resetPassword'])->name('students.password');
             Route::patch('/studenti/{student}/status', [AdminStudentController::class, 'toggle'])->name('students.toggle');
 

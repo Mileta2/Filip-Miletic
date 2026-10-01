@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\DeleteStudentRequest;
 use App\Http\Requests\Admin\ResetPasswordRequest;
 use App\Http\Requests\Admin\StoreStudentRequest;
 use App\Http\Requests\Admin\UpdateStudentRequest;
@@ -119,6 +120,16 @@ class StudentController extends Controller
         $student->update(['is_active' => ! $student->is_active]);
 
         return back()->with('success', $student->is_active ? 'Nalog je aktiviran.' : 'Nalog je deaktiviran.');
+    }
+
+    public function destroy(DeleteStudentRequest $request, User $student): RedirectResponse
+    {
+        $this->ensureStudent($student);
+        $request->validated();
+        $student->delete();
+
+        return redirect()->route('admin.students.index')
+            ->with('success', 'Studentski nalog je obrisan. Podaci o radovima ostali su sačuvani.');
     }
 
     private function ensureStudent(User $student): void

@@ -52,7 +52,7 @@ class UserFactory extends Factory
     {
         return $this->state(fn () => ['role' => UserRole::Student])
             ->afterCreating(fn (User $user) => $user->studentProfile()->create([
-                'index_number' => fake()->unique()->numerify('IT ####/###'),
+                'index_number' => fake()->unique()->numerify('###/##'),
                 'study_level' => $level,
                 'study_year' => 1,
             ]));

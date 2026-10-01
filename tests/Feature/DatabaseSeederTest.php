@@ -16,8 +16,17 @@ class DatabaseSeederTest extends TestCase
     {
         $this->seed();
 
-        foreach (['Petar Milić', 'Branimir Jakšić', 'Siniša Ilić', 'Dragiša Miljković', 'Nenad Jovanović', 'Dragana Radosavljević'] as $professor) {
-            $this->assertDatabaseHas('users', ['name' => $professor]);
+        $professors = [
+            'Petar Milić' => 'petar.milic@ftnkm.rs',
+            'Branimir Jakšić' => 'branimir.jaksic@ftnkm.rs',
+            'Siniša Ilić' => 'sinisa.ilic@ftnkm.rs',
+            'Dragiša Miljković' => 'dragisa.miljkovic@ftnkm.rs',
+            'Nenad Jovanović' => 'nenad.jovanovic@ftnkm.rs',
+            'Dragana Radosavljević' => 'dragana.radosavljevic@ftnkm.rs',
+        ];
+
+        foreach ($professors as $name => $email) {
+            $this->assertDatabaseHas('users', compact('name', 'email'));
         }
 
         $courses = [

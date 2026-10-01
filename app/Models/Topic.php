@@ -39,12 +39,12 @@ class Topic extends Model
 
     public function mentor(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'mentor_id');
+        return $this->belongsTo(User::class, 'mentor_id')->withTrashed();
     }
 
     public function student(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'student_id');
+        return $this->belongsTo(User::class, 'student_id')->withTrashed();
     }
 
     public function committeeMembers(): HasMany

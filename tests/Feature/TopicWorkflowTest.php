@@ -176,4 +176,41 @@ class TopicWorkflowTest extends TestCase
             'pdf' => UploadedFile::fake()->create('dokument.txt', 10, 'text/plain'),
         ])->assertSessionHasErrors('pdf');
     }
+
+    public function test_teme_mogu_da_se_filtriraju_po_profesoru_predmetu_i_statusu(): void
+    {
+        $firstProfessor = User::factory()->professor()->create(['name' => 'Petar Milić']);
+        $secondProfessor = User::factory()->professor()->create(['name' => 'Siniša Ilić']);
+        $matchingTopic = Topic::factory()->create([
+            'title' => 'Tražena tema iz oblaka',
+            'course' => 'Računarstvo u oblaku',
+            'mentor_id' => $firstProfessor->id,
+            'status' => TopicStatus::Available,
+        ]);
+        Topic::factory()->create([
+            'title' => 'Tema pogrešnog profesora',
+            'course' => 'Računarstvo u oblaku',
+            'mentor_id' => $secondProfessor->id,
+            'status' => TopicStatus::Available,
+        ]);
+        Topic::factory()->create([
+            'title' => 'Tema pogrešnog statusa',
+            'course' => 'Računarstvo u oblaku',
+            'mentor_id' => $firstProfessor->id,
+            'status' => TopicStatus::Reserved,
+        ]);
+
+        $this->get(route('topics.index', [
+            'mentor_id' => $firstProfessor->id,
+            'course' => 'Računarstvo u oblaku',
+            'status' => TopicStatus::Available->value,
+        ]))
+            ->assertOk()
+            ->assertSee($matchingTopic->title)
+            ->assertDontSee('Tema pogrešnog profesora')
+            ->assertDontSee('Tema pogrešnog statusa')
+            ->assertSee('Svi profesori')
+            ->assertSee('Svi predmeti')
+            ->assertSee('Svi statusi');
+    }
 }

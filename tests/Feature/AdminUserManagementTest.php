@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Enums\UserRole;
+use App\Models\Topic;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -18,7 +19,8 @@ class AdminUserManagementTest extends TestCase
         $response = $this->actingAs($admin)->post(route('admin.students.store'), [
             'first_name' => 'Stojan',
             'last_name' => 'Stojanović',
-            'index_number' => '108/22',
+            'index_number_prefix' => '108',
+            'index_number_suffix' => '22',
             'study_level' => 'diplomski',
             'study_year' => 4,
             'password' => 'Lozinka123',
@@ -41,7 +43,8 @@ class AdminUserManagementTest extends TestCase
             'first_name' => 'Stojan',
             'last_name' => 'Stojanović',
             'email' => 's.stojanovic.108-22@ftnkm.rs',
-            'index_number' => '108/22',
+            'index_number_prefix' => '108',
+            'index_number_suffix' => '22',
             'study_level' => 'diplomski',
             'study_year' => 4,
             'password' => 'Lozinka123',
@@ -60,7 +63,8 @@ class AdminUserManagementTest extends TestCase
             'first_name' => 'Petar',
             'last_name' => 'Petrović',
             'email' => 'petar@gmail.com',
-            'index_number' => '109/22',
+            'index_number_prefix' => '109',
+            'index_number_suffix' => '22',
             'study_level' => 'diplomski',
             'study_year' => 4,
             'password' => 'Lozinka123',
@@ -77,13 +81,46 @@ class AdminUserManagementTest extends TestCase
         $this->actingAs($admin)->put(route('admin.students.update', $student), [
             'name' => $student->name,
             'email' => $student->email,
-            'index_number' => $student->studentProfile->index_number,
+            'index_number_prefix' => explode('/', $student->studentProfile->index_number)[0],
+            'index_number_suffix' => explode('/', $student->studentProfile->index_number)[1],
             'study_level' => 'diplomski',
             'study_year' => 3,
             'is_active' => '1',
         ])->assertRedirect(route('admin.students.show', $student));
 
         $this->assertSame(3, $student->studentProfile->fresh()->study_year);
+    }
+
+    public function test_obrazac_za_studenta_ima_podeljen_indeks_i_zakljucan_email(): void
+    {
+        $admin = User::factory()->superAdmin()->create();
+
+        $this->actingAs($admin)->get(route('admin.students.create'))
+            ->assertOk()
+            ->assertSee('name="index_number_prefix"', false)
+            ->assertSee('name="index_number_suffix"', false)
+            ->assertSee('data-email-edit', false)
+            ->assertSee('readonly', false);
+    }
+
+    public function test_student_se_brise_tek_posle_provere_administratorske_lozinke(): void
+    {
+        $admin = User::factory()->superAdmin()->create();
+        $student = User::factory()->student()->create();
+        $topic = Topic::factory()->create(['student_id' => $student->id]);
+
+        $this->actingAs($admin)->from(route('admin.students.show', $student))->delete(route('admin.students.destroy', $student), [
+            'admin_password' => 'pogresna-lozinka',
+        ])->assertSessionHasErrors('admin_password');
+        $this->assertNotSoftDeleted($student);
+
+        $this->actingAs($admin)->delete(route('admin.students.destroy', $student), [
+            'admin_password' => 'password',
+        ])->assertRedirect(route('admin.students.index'));
+
+        $this->assertSoftDeleted($student);
+        $this->assertSame($student->id, $topic->fresh()->student_id);
+        $this->assertSame($student->id, $topic->fresh()->student->id);
     }
 
     public function test_profesor_mora_da_ima_email_na_domenu_fakulteta(): void

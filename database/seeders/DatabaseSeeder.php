@@ -85,7 +85,7 @@ class DatabaseSeeder extends Seeder
         ];
         $students = collect($studentNames)->map(function (string $name, int $index) {
             $level = $index < 5 ? StudyLevel::Undergraduate : StudyLevel::Master;
-            $indexNumber = 'IT '.(2021 + ($index % 3)).'/'.str_pad((string) ($index + 1), 3, '0', STR_PAD_LEFT);
+            $indexNumber = (101 + $index).'/'.str_pad((string) (22 + ($index % 3)), 2, '0', STR_PAD_LEFT);
             $nameParts = explode(' ', $name);
             $firstName = array_shift($nameParts);
             $lastName = array_pop($nameParts);
