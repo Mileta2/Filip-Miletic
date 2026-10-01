@@ -10,9 +10,10 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('home') }}">
-                <img class="brand-logo" src="{{ asset('images/logo-ftn.png') }}" alt="Logo Fakulteta tehničkih nauka">
-                <span><strong class="d-block lh-1">{{ config('app.faculty_name') }}</strong><small class="brand-subtitle">Sistem za izbor tema</small></span>
+            <a class="navbar-brand" href="{{ route('home') }}" aria-label="{{ config('app.faculty_name') }} — početna">
+                <span class="brand-logo-frame">
+                    <img class="brand-logo" src="{{ asset('images/logo-ftn-icon.png') }}" alt="">
+                </span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
                 <span class="navbar-toggler-icon"></span>

@@ -24,7 +24,21 @@ body {
 }
 
 .hero-panel {
+    position: relative;
+    isolation: isolate;
     background: linear-gradient(135deg, #0b3154 0%, #1976c9 72%, #2c8bd9 100%);
+}
+
+.hero-panel::after {
+    position: absolute;
+    width: 22rem;
+    height: 22rem;
+    right: -6rem;
+    bottom: -10rem;
+    z-index: 0;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 7%);
+    content: '';
 }
 
 .topic-card,
@@ -46,24 +60,40 @@ body {
     background: var(--brand-dark) !important;
 }
 
-.brand-logo {
-    width: 3.5rem;
+.navbar-brand {
+    padding-block: 0;
+}
+
+.brand-logo-frame {
+    width: 3.25rem;
     height: 3.25rem;
-    flex: 0 0 auto;
-    object-fit: contain;
+    display: grid;
+    place-items: center;
+    padding: .4rem;
+    border: 1px solid rgb(255 255 255 / 35%);
+    border-radius: 1rem;
+    background: #fff;
+    box-shadow: 0 .35rem .9rem rgb(0 0 0 / 18%);
 }
 
+.brand-logo,
 .hero-logo {
-    width: min(100%, 21rem);
-    max-height: 19rem;
+    width: 100%;
+    height: 100%;
+    display: block;
     object-fit: contain;
-    filter: drop-shadow(0 .75rem 1.5rem rgb(4 24 43 / 28%));
 }
 
-.brand-subtitle {
-    font-size: .7rem;
-    font-weight: 400;
-    opacity: .75;
+.hero-logo-shell {
+    width: clamp(9rem, 18vw, 13rem);
+    aspect-ratio: 1;
+    display: inline-grid;
+    place-items: center;
+    padding: 1.25rem;
+    border: 1px solid rgb(255 255 255 / 28%);
+    border-radius: 2rem;
+    background: rgb(255 255 255 / 92%);
+    box-shadow: 0 1.25rem 2.75rem rgb(4 24 43 / 25%);
 }
 
 .site-footer {
@@ -86,20 +116,16 @@ body {
 }
 
 @media (max-width: 575.98px) {
-    .brand-subtitle {
-        display: none;
-    }
-
-    .navbar-brand strong {
-        max-width: 190px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .brand-logo {
+    .brand-logo-frame {
         width: 3rem;
-        height: 2.75rem;
+        height: 3rem;
+        border-radius: .85rem;
+    }
+
+    .hero-logo-shell {
+        width: 9rem;
+        padding: 1rem;
+        border-radius: 1.5rem;
     }
 
     main {
