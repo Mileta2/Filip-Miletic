@@ -59,6 +59,44 @@ class TopicWorkflowTest extends TestCase
         ])->assertForbidden();
     }
 
+    public function test_profesor_moze_da_obrise_svoju_zauzetu_temu(): void
+    {
+        $professor = User::factory()->professor()->create();
+        $student = User::factory()->student()->create();
+        $topic = Topic::factory()->create([
+            'mentor_id' => $professor->id,
+            'student_id' => $student->id,
+            'status' => TopicStatus::Reserved,
+            'reserved_at' => now(),
+        ]);
+
+        $this->actingAs($professor)->delete(route('topics.destroy', $topic))
+            ->assertRedirect(route('topics.index'));
+
+        $this->assertDatabaseMissing('topics', ['id' => $topic->id]);
+    }
+
+    public function test_profesor_ne_moze_da_obrise_tudju_temu(): void
+    {
+        $owner = User::factory()->professor()->create();
+        $other = User::factory()->professor()->create();
+        $topic = Topic::factory()->create(['mentor_id' => $owner->id]);
+
+        $this->actingAs($other)->delete(route('topics.destroy', $topic))->assertForbidden();
+        $this->assertDatabaseHas('topics', ['id' => $topic->id]);
+    }
+
+    public function test_super_administrator_moze_da_obrise_bilo_koju_temu(): void
+    {
+        $admin = User::factory()->superAdmin()->create();
+        $topic = Topic::factory()->create(['status' => TopicStatus::Defended]);
+
+        $this->actingAs($admin)->delete(route('topics.destroy', $topic))
+            ->assertRedirect(route('topics.index'));
+
+        $this->assertDatabaseMissing('topics', ['id' => $topic->id]);
+    }
+
     public function test_obrisani_profesor_ne_moze_da_bude_mentor_nove_teme(): void
     {
         $admin = User::factory()->superAdmin()->create();

@@ -179,10 +179,6 @@ class TopicController extends Controller
     {
         Gate::authorize('delete', $topic);
 
-        if ($topic->status !== TopicStatus::Available) {
-            return back()->with('error', 'Zauzeta ili odbranjena tema ne može biti obrisana.');
-        }
-
         if ($topic->pdf_path) {
             Storage::delete($topic->pdf_path);
         }

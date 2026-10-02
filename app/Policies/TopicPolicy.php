@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use App\Enums\TopicStatus;
 use App\Enums\UserRole;
 use App\Models\Topic;
 use App\Models\User;
@@ -37,8 +36,7 @@ class TopicPolicy
     public function delete(User $user, Topic $topic): bool
     {
         return $user->hasRole(UserRole::Professor)
-            && $topic->mentor_id === $user->id
-            && $topic->status === TopicStatus::Available;
+            && $topic->mentor_id === $user->id;
     }
 
     public function release(User $user, Topic $topic): bool
