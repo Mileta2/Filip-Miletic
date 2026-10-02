@@ -16,7 +16,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="{{ route('home') }}" aria-label="{{ config('app.faculty_name') }} — početna">
-                <img class="brand-logo" src="{{ asset('images/logo-ftn-icon.png') }}" width="36" height="36" style="width: 36px !important; height: 36px !important;" alt="">
+                <span class="brand-logo-frame"><img class="brand-logo" src="{{ asset('images/logo-ftn-icon.png') }}" width="34" height="34" alt=""></span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
                 <span class="navbar-toggler-icon"></span>
@@ -41,7 +41,6 @@
                                 <li class="nav-item"><a class="nav-link" href="{{ route('topics.index', ['mine' => 1]) }}">Moje teme</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{{ route('topics.create') }}">Nova tema</a></li>
                             @elseif(auth()->user()->role === \App\Enums\UserRole::Student)
-                                <li class="nav-item"><a class="nav-link" href="{{ route('topics.index', ['status' => 'available']) }}">Teme</a></li>
                                 <li class="nav-item"><a class="nav-link" href="{{ route('student.topic') }}">Moja tema</a></li>
                             @endif
                             <li class="nav-item"><a class="nav-link" href="{{ route('profile.edit') }}">Profil</a></li>

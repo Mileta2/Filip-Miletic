@@ -36,7 +36,9 @@ class StudentVisibilityAndProfileTest extends TestCase
         $this->actingAs($student)->get(route('home'))
             ->assertOk()
             ->assertSee('Pregled tema za diplomske radove studenata osnovnih studija.')
-            ->assertDontSee('Pregled tema za završne radove studenata master studija.');
+            ->assertDontSee('Pregled tema za završne radove studenata master studija.')
+            ->assertSee('Moja tema')
+            ->assertDontSee('<a class="nav-link" href="'.route('topics.index', ['status' => 'available']).'">Teme</a>', false);
 
         $this->actingAs($student)->get(route('topics.master'))
             ->assertRedirect(route('topics.undergraduate'));

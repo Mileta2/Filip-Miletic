@@ -106,15 +106,60 @@ body {
     padding-block: 0;
 }
 
-.brand-logo {
-    display: block;
-    padding: .3rem;
-    box-sizing: border-box;
-    object-fit: contain;
-    border: 1px solid #fff;
+.brand-logo-frame {
+    display: grid;
+    width: 46px;
+    height: 46px;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 80%);
     border-radius: .75rem;
     background: #fff;
     box-shadow: 0 .35rem .9rem rgb(0 0 0 / 18%);
+}
+
+.brand-logo {
+    display: block;
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+}
+
+.topic-status-icon {
+    display: inline-grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 78%);
+    font-size: 1.05rem;
+    box-shadow: 0 .15rem .4rem rgb(15 23 42 / 8%);
+}
+
+.topic-card-available {
+    border: 1px solid #d9eafa;
+    background: #f2f8fe;
+}
+
+.topic-card-available .topic-status-icon {
+    color: #1178d5;
+}
+
+.topic-card-reserved {
+    border: 1px solid #f5dfe3;
+    background: #fff5f6;
+}
+
+.topic-card-reserved .topic-status-icon {
+    color: #c41c35;
+}
+
+.topic-card-defended {
+    border: 1px solid #d9eee0;
+    background: #f2faf5;
+}
+
+.topic-card-defended .topic-status-icon {
+    color: #21854c;
 }
 
 .hero-logo {

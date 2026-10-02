@@ -276,4 +276,20 @@ class TopicWorkflowTest extends TestCase
             ->assertSee('Svi predmeti')
             ->assertSee('Svi statusi');
     }
+
+    public function test_kartice_tema_imaju_ikone_i_blage_boje_prema_statusu(): void
+    {
+        Topic::factory()->create(['status' => TopicStatus::Available]);
+        Topic::factory()->create(['status' => TopicStatus::Reserved]);
+        Topic::factory()->create(['status' => TopicStatus::Defended]);
+
+        $this->get(route('topics.index'))
+            ->assertOk()
+            ->assertSee('topic-card-available', false)
+            ->assertSee('bi-unlock-fill', false)
+            ->assertSee('topic-card-reserved', false)
+            ->assertSee('bi-lock-fill', false)
+            ->assertSee('topic-card-defended', false)
+            ->assertSee('bi-check-circle-fill', false);
+    }
 }

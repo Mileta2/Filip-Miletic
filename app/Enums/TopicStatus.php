@@ -25,4 +25,18 @@ enum TopicStatus: string
             self::Defended => 'text-bg-primary',
         };
     }
+
+    public function icon(): string
+    {
+        return match ($this) {
+            self::Available => 'bi-unlock-fill',
+            self::Reserved => 'bi-lock-fill',
+            self::Defended => 'bi-check-circle-fill',
+        };
+    }
+
+    public function cardClass(): string
+    {
+        return 'topic-card-'.$this->value;
+    }
 }

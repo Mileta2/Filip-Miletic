@@ -66,10 +66,13 @@
 <div class="row g-4">
     @forelse($topics as $topic)
         <div class="col-md-6 col-xl-4">
-            <article class="card topic-card border-0 shadow-sm h-100">
+            <article class="card topic-card {{ $topic->status->cardClass() }} shadow-sm h-100">
                 <div class="card-body p-4 d-flex flex-column">
                     <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
-                        <span class="badge {{ $topic->status->badgeClass() }}">{{ $topic->status->label() }}</span>
+                        <span class="topic-status-icon" title="{{ $topic->status->label() }}">
+                            <i class="bi {{ $topic->status->icon() }}" aria-hidden="true"></i>
+                            <span class="visually-hidden">Status: {{ $topic->status->label() }}</span>
+                        </span>
                         <span class="small text-secondary">{{ $topic->type->label() }}</span>
                     </div>
                     <p class="small fw-semibold text-primary mb-2">{{ $topic->course }}</p>
