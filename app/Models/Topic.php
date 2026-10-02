@@ -14,6 +14,8 @@ class Topic extends Model
 {
     use HasFactory;
 
+    public const ACTIVE_MENTOR_SCOPE = 'active_mentor';
+
     protected $fillable = [
         'title',
         'course',
@@ -35,6 +37,12 @@ class Topic extends Model
             'reserved_at' => 'datetime',
             'defended_at' => 'date',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(self::ACTIVE_MENTOR_SCOPE, fn (Builder $query) => $query
+            ->whereHas('mentor', fn (Builder $query) => $query->where('is_active', true)));
     }
 
     public function mentor(): BelongsTo

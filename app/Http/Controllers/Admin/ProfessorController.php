@@ -7,11 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ResetPasswordRequest;
 use App\Http\Requests\Admin\StoreProfessorRequest;
 use App\Http\Requests\Admin\UpdateProfessorRequest;
+use App\Models\Topic;
 use App\Models\User;
 use App\Support\TemporaryPassword;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProfessorController extends Controller
@@ -22,7 +24,7 @@ class ProfessorController extends Controller
         $professors = User::query()
             ->where('role', UserRole::Professor)
             ->with('professorProfile')
-            ->withCount('mentoredTopics')
+            ->withCount(['mentoredTopics' => fn ($query) => $query->withoutGlobalScope(Topic::ACTIVE_MENTOR_SCOPE)])
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($query) use ($search) {
                     $query->where('name', 'like', "%{$search}%")
@@ -75,7 +77,11 @@ class ProfessorController extends Controller
     {
         $this->ensureProfessor($professor);
 
-        return view('admin.professors.show', ['professor' => $professor->load('professorProfile')->loadCount('mentoredTopics')]);
+        return view('admin.professors.show', [
+            'professor' => $professor->load('professorProfile')->loadCount([
+                'mentoredTopics' => fn ($query) => $query->withoutGlobalScope(Topic::ACTIVE_MENTOR_SCOPE),
+            ]),
+        ]);
     }
 
     public function edit(User $professor): View
@@ -125,17 +131,39 @@ class ProfessorController extends Controller
         return back()->with('success', $professor->is_active ? 'Nalog je aktiviran.' : 'Nalog je deaktiviran.');
     }
 
-    public function destroy(User $professor): RedirectResponse
+    public function confirmDestroy(User $professor): View
     {
         $this->ensureProfessor($professor);
 
-        if ($professor->mentoredTopics()->exists() || $professor->committeeMemberships()->exists()) {
-            return back()->with('error', 'Profesor ima povezane radove i ne može biti obrisan. Deaktivirajte nalog.');
+        $topics = $professor->mentoredTopics()
+            ->withoutGlobalScope(Topic::ACTIVE_MENTOR_SCOPE)
+            ->orderBy('type')
+            ->orderBy('course')
+            ->orderBy('title')
+            ->get();
+
+        return view('admin.professors.delete', compact('professor', 'topics'));
+    }
+
+    public function destroy(User $professor): RedirectResponse
+    {
+        $this->ensureProfessor($professor);
+        $topics = $professor->mentoredTopics()
+            ->withoutGlobalScope(Topic::ACTIVE_MENTOR_SCOPE)
+            ->get();
+        $pdfPaths = $topics->pluck('pdf_path')->filter()->all();
+
+        DB::transaction(function () use ($professor, $topics) {
+            $topics->each->delete();
+            $professor->delete();
+        });
+
+        if ($pdfPaths !== []) {
+            Storage::delete($pdfPaths);
         }
 
-        $professor->delete();
-
-        return redirect()->route('admin.professors.index')->with('success', 'Profesor je obrisan.');
+        return redirect()->route('admin.professors.index')
+            ->with('success', 'Profesor i sve njegove teme su obrisani.');
     }
 
     private function ensureProfessor(User $professor): void

@@ -233,4 +233,66 @@ class AdminUserManagementTest extends TestCase
         ])->assertSessionHas('success');
         $this->assertTrue($professor->fresh()->must_change_password);
     }
+
+    public function test_pregled_brisanja_profesora_grupise_teme_po_nivou_i_predmetu(): void
+    {
+        $admin = User::factory()->superAdmin()->create();
+        $professor = User::factory()->professor()->create();
+        Topic::factory()->create([
+            'mentor_id' => $professor->id,
+            'type' => TopicType::Undergraduate,
+            'course' => 'Operativni sistemi 1',
+            'title' => 'Upravljanje procesima',
+        ]);
+        Topic::factory()->create([
+            'mentor_id' => $professor->id,
+            'type' => TopicType::Master,
+            'course' => 'Računarske mreže 2',
+            'title' => 'Softverski definisane mreže',
+        ]);
+
+        $this->actingAs($admin)->get(route('admin.professors.delete', $professor))
+            ->assertOk()
+            ->assertSeeInOrder([
+                'Diplomski rad',
+                'Operativni sistemi 1',
+                'Upravljanje procesima',
+                'Master rad',
+                'Računarske mreže 2',
+                'Softverski definisane mreže',
+            ]);
+    }
+
+    public function test_brisanje_profesora_brise_i_sve_njegove_teme(): void
+    {
+        $admin = User::factory()->superAdmin()->create();
+        $professor = User::factory()->professor()->create();
+        $topics = Topic::factory()->count(2)->create(['mentor_id' => $professor->id]);
+
+        $this->actingAs($admin)->delete(route('admin.professors.destroy', $professor))
+            ->assertRedirect(route('admin.professors.index'));
+
+        $this->assertSoftDeleted($professor);
+        foreach ($topics as $topic) {
+            $this->assertDatabaseMissing('topics', ['id' => $topic->id]);
+        }
+    }
+
+    public function test_teme_deaktiviranog_profesora_nisu_vidljive_u_sistemu(): void
+    {
+        $admin = User::factory()->superAdmin()->create();
+        $professor = User::factory()->professor()->create();
+        $topic = Topic::factory()->create([
+            'mentor_id' => $professor->id,
+            'title' => 'Tema deaktiviranog profesora',
+        ]);
+
+        $this->actingAs($admin)->patch(route('admin.professors.toggle', $professor));
+
+        $this->get(route('topics.index'))
+            ->assertOk()
+            ->assertDontSee('Tema deaktiviranog profesora');
+        $this->get(route('topics.show', $topic))->assertNotFound();
+        $this->assertDatabaseHas('topics', ['id' => $topic->id]);
+    }
 }

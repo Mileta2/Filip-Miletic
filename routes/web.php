@@ -55,6 +55,7 @@ Route::middleware(['auth', 'active'])->group(function () {
 
             Route::resource('profesori', AdminProfessorController::class)
                 ->parameters(['profesori' => 'professor'])->names('professors');
+            Route::get('/profesori/{professor}/brisanje', [AdminProfessorController::class, 'confirmDestroy'])->name('professors.delete');
             Route::put('/profesori/{professor}/lozinka', [AdminProfessorController::class, 'resetPassword'])->name('professors.password');
             Route::patch('/profesori/{professor}/status', [AdminProfessorController::class, 'toggle'])->name('professors.toggle');
         });
