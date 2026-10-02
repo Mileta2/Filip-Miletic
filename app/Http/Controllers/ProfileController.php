@@ -20,11 +20,8 @@ class ProfileController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $user = $request->user();
-        $common = $request->validate(['name' => ['required', 'string', 'max:255']]);
 
-        DB::transaction(function () use ($request, $user, $common) {
-            $user->update($common);
-
+        DB::transaction(function () use ($request, $user) {
             if ($user->hasRole(UserRole::Student)) {
                 $data = $request->validate([
                     'date_of_birth' => ['required', 'date', 'before:today'],
@@ -37,8 +34,6 @@ class ProfileController extends Controller
 
             if ($user->hasRole(UserRole::Professor)) {
                 $data = $request->validate([
-                    'academic_title' => ['required', 'string', 'max:150'],
-                    'department' => ['nullable', 'string', 'max:255'],
                     'research_area' => ['nullable', 'string', 'max:2000'],
                 ]);
                 $user->professorProfile->update($data);

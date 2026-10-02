@@ -34,9 +34,9 @@
             value="{{ old('index_number_prefix', $savedIndexPrefix) }}"
             inputmode="numeric"
             autocomplete="off"
-            maxlength="4"
-            pattern="[0-9]{1,4}"
-            placeholder="___"
+            maxlength="8"
+            pattern="[0-9]{1,8}"
+            placeholder="Broj"
             aria-label="Prvi deo broja indeksa"
             required
         >
@@ -48,9 +48,9 @@
             value="{{ old('index_number_suffix', $savedIndexSuffix) }}"
             inputmode="numeric"
             autocomplete="off"
-            maxlength="2"
-            pattern="[0-9]{2}"
-            placeholder="__"
+            maxlength="8"
+            pattern="[0-9]{1,8}"
+            placeholder="Godina"
             aria-label="Drugi deo broja indeksa"
             required
         >
@@ -58,7 +58,7 @@
     @error('index_number_prefix')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
     @error('index_number_suffix')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
     @error('index_number')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
-    <div class="form-text">Unesite oba dela indeksa, na primer 108/22.</div>
+    <div class="form-text">Unesite do osam cifara sa obe strane kose crte, na primer 32009/2025.</div>
 </div>
 
 <div

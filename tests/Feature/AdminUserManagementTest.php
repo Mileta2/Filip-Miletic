@@ -57,6 +57,25 @@ class AdminUserManagementTest extends TestCase
         $this->assertDatabaseHas('users', ['email' => 's.stojanovic.108-22@ftnkm.rs']);
     }
 
+    public function test_broj_indeksa_prihvata_do_osam_cifara_sa_obe_strane(): void
+    {
+        $admin = User::factory()->superAdmin()->create();
+
+        $this->actingAs($admin)->post(route('admin.students.store'), [
+            'first_name' => 'Veliki',
+            'last_name' => 'Indeks',
+            'index_number_prefix' => '32009001',
+            'index_number_suffix' => '20251234',
+            'study_level' => 'diplomski',
+            'study_year' => 4,
+            'password' => 'Lozinka123',
+            'password_confirmation' => 'Lozinka123',
+            'is_active' => '1',
+        ])->assertSessionDoesntHaveErrors();
+
+        $this->assertDatabaseHas('student_profiles', ['index_number' => '32009001/20251234']);
+    }
+
     public function test_email_van_domena_fakulteta_se_ne_prihvata(): void
     {
         $admin = User::factory()->superAdmin()->create();

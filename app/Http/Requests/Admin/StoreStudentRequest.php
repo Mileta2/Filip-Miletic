@@ -52,8 +52,8 @@ class StoreStudentRequest extends FormRequest
             'first_name' => ['required', 'string', 'max:100'],
             'last_name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:255', 'ends_with:@'.config('app.email_domain'), 'unique:users,email'],
-            'index_number_prefix' => ['required', 'regex:/^\d{1,4}$/'],
-            'index_number_suffix' => ['required', 'regex:/^\d{2}$/'],
+            'index_number_prefix' => ['required', 'regex:/^\d{1,8}$/'],
+            'index_number_suffix' => ['required', 'regex:/^\d{1,8}$/'],
             'index_number' => ['required', 'string', 'max:50', 'unique:student_profiles,index_number'],
             'study_level' => ['required', Rule::enum(StudyLevel::class)],
             'study_year' => ['required', 'integer', 'min:1', Rule::when($this->input('study_level') === StudyLevel::Master->value, ['max:2'], ['max:4'])],
@@ -66,8 +66,8 @@ class StoreStudentRequest extends FormRequest
     {
         return [
             'email.ends_with' => 'Email adresa mora pripadati domenu @'.config('app.email_domain').'.',
-            'index_number_prefix.regex' => 'Prvi deo broja indeksa mora sadržati od jedne do četiri cifre.',
-            'index_number_suffix.regex' => 'Drugi deo broja indeksa mora sadržati tačno dve cifre.',
+            'index_number_prefix.regex' => 'Prvi deo broja indeksa mora sadržati od jedne do osam cifara.',
+            'index_number_suffix.regex' => 'Drugi deo broja indeksa mora sadržati od jedne do osam cifara.',
         ];
     }
 }

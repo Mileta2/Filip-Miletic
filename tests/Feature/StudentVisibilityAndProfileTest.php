@@ -88,4 +88,39 @@ class StudentVisibilityAndProfileTest extends TestCase
 
         $this->assertSame(2, $student->studentProfile->fresh()->study_year);
     }
+
+    public function test_student_ne_moze_da_promeni_ime_i_prezime_preko_profila(): void
+    {
+        $student = User::factory()->student()->create(['name' => 'Petar Petrović']);
+        $student->studentProfile->update(['date_of_birth' => '2002-05-14']);
+
+        $this->actingAs($student)->put(route('profile.update'), [
+            'name' => 'Promenjeno Ime',
+            'date_of_birth' => '2002-05-14',
+        ])->assertSessionHas('success');
+
+        $this->assertSame('Petar Petrović', $student->fresh()->name);
+    }
+
+    public function test_profesor_ne_moze_da_promeni_sluzbene_podatke_preko_profila(): void
+    {
+        $professor = User::factory()->professor()->create(['name' => 'Petar Milić']);
+        $professor->professorProfile->update([
+            'academic_title' => 'Vanredni profesor',
+            'department' => 'Katedra za računarstvo',
+        ]);
+
+        $this->actingAs($professor)->put(route('profile.update'), [
+            'name' => 'Promenjeno Ime',
+            'academic_title' => 'Asistent',
+            'department' => 'Druga katedra',
+            'research_area' => 'Računarstvo u oblaku',
+        ])->assertSessionHas('success');
+
+        $professor->refresh();
+        $this->assertSame('Petar Milić', $professor->name);
+        $this->assertSame('Vanredni profesor', $professor->professorProfile->academic_title);
+        $this->assertSame('Katedra za računarstvo', $professor->professorProfile->department);
+        $this->assertSame('Računarstvo u oblaku', $professor->professorProfile->research_area);
+    }
 }
