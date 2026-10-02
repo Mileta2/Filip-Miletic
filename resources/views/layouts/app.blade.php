@@ -74,5 +74,6 @@
         </div>
     </main>
     <footer class="site-footer py-4 mt-auto"><div class="container d-flex flex-wrap justify-content-between gap-2"><span>© {{ now()->year }} {{ config('app.faculty_name') }}</span><span>Diplomski i master radovi</span></div></footer>
+    @stack('scripts')
 </body>
 </html>

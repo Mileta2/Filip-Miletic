@@ -27,6 +27,13 @@ return [
         'string' => 'Polje :attribute mora imati najmanje :min znakova.',
     ],
     'mimes' => 'Polje :attribute mora biti fajl tipa: :values.',
+    'password' => [
+        'letters' => 'Polje :attribute mora sadržati najmanje jedno slovo.',
+        'mixed' => 'Polje :attribute mora sadržati najmanje jedno veliko i jedno malo slovo.',
+        'numbers' => 'Polje :attribute mora sadržati najmanje jedan broj.',
+        'symbols' => 'Polje :attribute mora sadržati najmanje jedan specijalni znak.',
+        'uncompromised' => 'Uneta vrednost za polje :attribute pojavljuje se u javno dostupnim podacima. Izaberite drugu vrednost.',
+    ],
     'required' => 'Polje :attribute je obavezno.',
     'string' => 'Polje :attribute mora biti tekst.',
     'unique' => 'Uneta vrednost za polje :attribute već postoji.',

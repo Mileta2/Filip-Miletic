@@ -115,7 +115,7 @@ class AdminUserManagementTest extends TestCase
         $this->assertSame(StudyLevel::Undergraduate, $student->studentProfile->fresh()->study_level);
     }
 
-    public function test_obrazac_za_studenta_ima_podeljen_indeks_i_zakljucan_email(): void
+    public function test_obrazac_za_studenta_ima_podeljen_indeks_i_odvojen_prikaz_emaila(): void
     {
         $admin = User::factory()->superAdmin()->create();
 
@@ -123,8 +123,20 @@ class AdminUserManagementTest extends TestCase
             ->assertOk()
             ->assertSee('name="index_number_prefix"', false)
             ->assertSee('name="index_number_suffix"', false)
+            ->assertSee('class="input-group"', false)
+            ->assertSee('id="email_preview"', false)
+            ->assertSee('id="email" name="email" type="hidden"', false)
+            ->assertSee('data-student-form', false)
             ->assertSee('data-email-edit', false)
-            ->assertSee('readonly', false);
+            ->assertSee('Najmanje 8 znakova, uz veliko slovo, malo slovo i broj.');
+    }
+
+    public function test_slozenost_lozinke_ima_srpsku_poruku(): void
+    {
+        $this->assertSame(
+            'Polje lozinka mora sadržati najmanje jedno veliko i jedno malo slovo.',
+            trans('validation.password.mixed', ['attribute' => 'lozinka'])
+        );
     }
 
     public function test_student_se_brise_tek_posle_provere_administratorske_lozinke(): void
