@@ -22,6 +22,12 @@ class ProfileController extends Controller
         $user = $request->user();
 
         DB::transaction(function () use ($request, $user) {
+            if ($user->hasRole(UserRole::SuperAdmin)) {
+                $user->update($request->validate([
+                    'name' => ['required', 'string', 'max:255'],
+                ]));
+            }
+
             if ($user->hasRole(UserRole::Student)) {
                 $data = $request->validate([
                     'date_of_birth' => ['required', 'date', 'before:today'],

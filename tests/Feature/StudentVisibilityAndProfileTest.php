@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Enums\StudyLevel;
 use App\Enums\TopicType;
+use App\Enums\UserRole;
 use App\Models\Topic;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -124,5 +125,19 @@ class StudentVisibilityAndProfileTest extends TestCase
         $this->assertSame('Vanredni profesor', $professor->professorProfile->academic_title);
         $this->assertSame('Katedra za računarstvo', $professor->professorProfile->department);
         $this->assertSame('Računarstvo u oblaku', $professor->professorProfile->research_area);
+    }
+
+    public function test_super_administrator_moze_da_promeni_svoje_ime(): void
+    {
+        $admin = User::factory()->create([
+            'name' => 'Staro Ime',
+            'role' => UserRole::SuperAdmin,
+        ]);
+
+        $this->actingAs($admin)->put(route('profile.update'), [
+            'name' => 'Novo Ime',
+        ])->assertSessionHas('success');
+
+        $this->assertSame('Novo Ime', $admin->fresh()->name);
     }
 }
