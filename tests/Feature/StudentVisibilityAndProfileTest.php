@@ -41,6 +41,10 @@ class StudentVisibilityAndProfileTest extends TestCase
         $this->actingAs($student)->get(route('topics.master'))
             ->assertRedirect(route('topics.undergraduate'));
 
+        $masterTopic = Topic::factory()->create(['type' => TopicType::Master]);
+        $this->actingAs($student)->get(route('topics.show', $masterTopic))
+            ->assertRedirect(route('topics.undergraduate'));
+
         $this->actingAs($student)->get(route('topics.index', ['type' => TopicType::Master->value]))
             ->assertOk()
             ->assertSee($diplomaTopic->title)

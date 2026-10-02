@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Enums\StudyLevel;
+use App\Enums\TopicType;
 use App\Enums\UserRole;
 use App\Models\Topic;
 use App\Models\User;
@@ -89,6 +91,28 @@ class AdminUserManagementTest extends TestCase
         ])->assertRedirect(route('admin.students.show', $student));
 
         $this->assertSame(3, $student->studentProfile->fresh()->study_year);
+    }
+
+    public function test_nivo_studija_ne_moze_da_se_promeni_suprotno_odabranoj_temi(): void
+    {
+        $admin = User::factory()->superAdmin()->create();
+        $student = User::factory()->student(StudyLevel::Undergraduate)->create();
+        Topic::factory()->create([
+            'student_id' => $student->id,
+            'type' => TopicType::Undergraduate,
+        ]);
+
+        $this->actingAs($admin)->put(route('admin.students.update', $student), [
+            'name' => $student->name,
+            'email' => $student->email,
+            'index_number_prefix' => explode('/', $student->studentProfile->index_number)[0],
+            'index_number_suffix' => explode('/', $student->studentProfile->index_number)[1],
+            'study_level' => StudyLevel::Master->value,
+            'study_year' => 1,
+            'is_active' => '1',
+        ])->assertSessionHasErrors('study_level');
+
+        $this->assertSame(StudyLevel::Undergraduate, $student->studentProfile->fresh()->study_level);
     }
 
     public function test_obrazac_za_studenta_ima_podeljen_indeks_i_zakljucan_email(): void

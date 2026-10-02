@@ -103,8 +103,12 @@ class TopicController extends Controller
         return $this->index($request, TopicType::Master);
     }
 
-    public function show(Topic $topic): View
+    public function show(Request $request, Topic $topic): View|RedirectResponse
     {
+        if ($redirect = $this->redirectStudentToOwnCatalog($request, $topic->type)) {
+            return $redirect;
+        }
+
         return view('topics.show', [
             'topic' => $topic->load(['mentor.professorProfile', 'student.studentProfile', 'committeeMembers.professor.professorProfile']),
         ]);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\TopicStatus;
 use App\Enums\TopicType;
 use App\Enums\UserRole;
 use Illuminate\Foundation\Http\FormRequest;
@@ -16,6 +17,15 @@ class UpdateTopicRequest extends FormRequest
 
     public function rules(): array
     {
+        $topic = $this->route('topic');
+        $professorExists = Rule::exists('users', 'id')
+            ->where('role', UserRole::Professor->value)
+            ->whereNull('deleted_at');
+
+        if ($topic->status === TopicStatus::Available) {
+            $professorExists->where('is_active', true);
+        }
+
         return [
             'title' => ['required', 'string', 'max:255'],
             'course' => ['required', 'string', 'max:255'],
@@ -24,7 +34,7 @@ class UpdateTopicRequest extends FormRequest
             'mentor_id' => [
                 Rule::requiredIf($this->user()->hasRole(UserRole::SuperAdmin)),
                 'nullable',
-                Rule::exists('users', 'id')->where('role', UserRole::Professor->value),
+                $professorExists,
             ],
             'pdf' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],
         ];

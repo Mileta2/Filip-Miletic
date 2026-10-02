@@ -25,7 +25,10 @@ class StoreTopicRequest extends FormRequest
             'mentor_id' => [
                 Rule::requiredIf($this->user()->hasRole(UserRole::SuperAdmin)),
                 'nullable',
-                Rule::exists('users', 'id')->where('role', UserRole::Professor->value)->where('is_active', true),
+                Rule::exists('users', 'id')
+                    ->where('role', UserRole::Professor->value)
+                    ->where('is_active', true)
+                    ->whereNull('deleted_at'),
             ],
             'pdf' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],
         ];

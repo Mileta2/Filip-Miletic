@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin;
 use App\Enums\StudyLevel;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class UpdateStudentRequest extends FormRequest
 {
@@ -47,6 +48,21 @@ class UpdateStudentRequest extends FormRequest
             'study_year' => ['required', 'integer', 'min:1', Rule::when($this->input('study_level') === StudyLevel::Master->value, ['max:2'], ['max:4'])],
             'is_active' => ['required', 'boolean'],
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator): void {
+            $student = $this->route('student');
+            $selectedTopic = $student?->selectedTopic;
+
+            if ($selectedTopic && $selectedTopic->type->value !== $this->input('study_level')) {
+                $validator->errors()->add(
+                    'study_level',
+                    'Nivo studija nije moguće promeniti dok student ima odabranu temu drugog nivoa.'
+                );
+            }
+        });
     }
 
     public function messages(): array

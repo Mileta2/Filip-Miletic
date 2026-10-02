@@ -25,6 +25,18 @@ class AuthenticationTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
+    public function test_email_prilikom_prijave_nije_osetljiv_na_velika_slova_i_razmake(): void
+    {
+        $user = User::factory()->superAdmin()->create(['email' => 'admin@ftnkm.rs']);
+
+        $this->post(route('login.store'), [
+            'email' => '  ADMIN@FTNKM.RS  ',
+            'password' => 'password',
+        ])->assertRedirect(route('dashboard'));
+
+        $this->assertAuthenticatedAs($user);
+    }
+
     public function test_deaktiviran_korisnik_ne_moze_da_se_prijavi(): void
     {
         $user = User::factory()->superAdmin()->create(['is_active' => false]);

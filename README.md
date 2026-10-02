@@ -119,7 +119,7 @@ Demo podaci su namenjeni isključivo lokalnom razvojnom okruženju.
 |---|---|---|
 | Super administrator | `admin@ftnkm.rs` | `Lozinka123` |
 | Profesor | `petar.milic@ftnkm.rs` | `Lozinka123` |
-| Student | `ana.nikolic.it-2021-001@ftnkm.rs` | `Lozinka123` |
+| Student | `ana.nikolic.101-22@ftnkm.rs` | `Lozinka123` |
 
 Seeder pravi ukupno 6 profesora, 10 studenata, 30 diplomskih i 10 master tema.
 

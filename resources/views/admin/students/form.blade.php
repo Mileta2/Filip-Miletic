@@ -66,6 +66,7 @@
     data-student-email-generator
     data-email-domain="{{ config('app.email_domain') }}"
     data-automatic-email="{{ $editing ? 'false' : 'true' }}"
+    data-initial-email="{{ old('email', '') }}"
 >
     <label class="form-label" for="email">Email</label>
     <div class="input-group">
@@ -75,6 +76,7 @@
             name="email"
             type="email"
             value="{{ old('email', $editing ? $student->email : '') }}"
+            autocomplete="off"
             readonly
             @required($editing)
         >
@@ -113,12 +115,12 @@
     <div class="row">
         <div class="col-md-6 mb-3">
             <label class="form-label" for="password">Inicijalna lozinka</label>
-            <input class="form-control @error('password') is-invalid @enderror" id="password" name="password" type="password" required>
+            <input class="form-control @error('password') is-invalid @enderror" id="password" name="password" type="password" autocomplete="new-password" required>
             @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
         <div class="col-md-6 mb-4">
             <label class="form-label" for="password_confirmation">Potvrda lozinke</label>
-            <input class="form-control" id="password_confirmation" name="password_confirmation" type="password" required>
+            <input class="form-control" id="password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" required>
         </div>
     </div>
 @endunless

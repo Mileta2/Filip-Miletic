@@ -59,6 +59,23 @@ class TopicWorkflowTest extends TestCase
         ])->assertForbidden();
     }
 
+    public function test_obrisani_profesor_ne_moze_da_bude_mentor_nove_teme(): void
+    {
+        $admin = User::factory()->superAdmin()->create();
+        $deletedProfessor = User::factory()->professor()->create();
+        $deletedProfessor->delete();
+
+        $this->actingAs($admin)->post(route('topics.store'), [
+            'title' => 'Tema sa obrisanim mentorom',
+            'course' => 'Web dizajn',
+            'description' => 'Opis teme koji je dovoljno dug za proveru validacije obrisanog mentora.',
+            'type' => TopicType::Undergraduate->value,
+            'mentor_id' => $deletedProfessor->id,
+        ])->assertSessionHasErrors('mentor_id');
+
+        $this->assertDatabaseCount('topics', 0);
+    }
+
     public function test_student_moze_da_izabere_slobodnu_temu_odgovarajuceg_nivoa(): void
     {
         $student = User::factory()->student(StudyLevel::Undergraduate)->create();
@@ -162,6 +179,52 @@ class TopicWorkflowTest extends TestCase
 
         $this->assertSame(TopicStatus::Defended, $topic->fresh()->status);
         $this->assertDatabaseCount('defense_committee_members', 2);
+    }
+
+    public function test_datum_odbrane_ne_moze_da_bude_pre_rezervacije(): void
+    {
+        $mentor = User::factory()->professor()->create();
+        $president = User::factory()->professor()->create();
+        $member = User::factory()->professor()->create();
+        $student = User::factory()->student()->create();
+        $topic = Topic::factory()->create([
+            'mentor_id' => $mentor->id,
+            'student_id' => $student->id,
+            'status' => TopicStatus::Reserved,
+            'reserved_at' => now()->subDays(3),
+        ]);
+
+        $this->actingAs($mentor)->put(route('topics.defense.update', $topic), [
+            'defended_at' => now()->subDays(4)->toDateString(),
+            'president_id' => $president->id,
+            'member_ids' => [$member->id],
+        ])->assertSessionHasErrors('defended_at');
+
+        $this->assertSame(TopicStatus::Reserved, $topic->fresh()->status);
+        $this->assertDatabaseCount('defense_committee_members', 0);
+    }
+
+    public function test_obrisani_profesor_ne_moze_da_bude_dodat_u_komisiju(): void
+    {
+        $mentor = User::factory()->professor()->create();
+        $president = User::factory()->professor()->create();
+        $deletedMember = User::factory()->professor()->create();
+        $student = User::factory()->student()->create();
+        $topic = Topic::factory()->create([
+            'mentor_id' => $mentor->id,
+            'student_id' => $student->id,
+            'status' => TopicStatus::Reserved,
+            'reserved_at' => now()->subWeek(),
+        ]);
+        $deletedMember->delete();
+
+        $this->actingAs($mentor)->put(route('topics.defense.update', $topic), [
+            'defended_at' => now()->toDateString(),
+            'president_id' => $president->id,
+            'member_ids' => [$deletedMember->id],
+        ])->assertSessionHasErrors('member_ids.0');
+
+        $this->assertSame(TopicStatus::Reserved, $topic->fresh()->status);
     }
 
     public function test_upload_prihvata_samo_pdf_dokument(): void
