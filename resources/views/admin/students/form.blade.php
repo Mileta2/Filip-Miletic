@@ -116,17 +116,9 @@
 </div>
 
 @unless($editing)
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            <label class="form-label" for="password">Inicijalna lozinka</label>
-            <input class="form-control @error('password') is-invalid @enderror" id="password" name="password" type="password" autocomplete="new-password" required>
-            @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            <div class="form-text">Najmanje 8 znakova, uz veliko slovo, malo slovo i broj.</div>
-        </div>
-        <div class="col-md-6 mb-4">
-            <label class="form-label" for="password_confirmation">Potvrda lozinke</label>
-            <input class="form-control" id="password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" required>
-        </div>
+    <div class="alert alert-info d-flex gap-2 align-items-start mb-4">
+        <i class="bi bi-shield-lock fs-5" aria-hidden="true"></i>
+        <div><strong>Inicijalna lozinka se generiše automatski.</strong><br><span class="small">Biće prikazana administratoru nakon uspešnog kreiranja naloga.</span></div>
     </div>
 @endunless
 

@@ -1,6 +1,13 @@
 @extends('layouts.app')
 @section('title', $student->name)
 @section('content')
+@if(session('generated_password'))
+    <div class="alert alert-warning shadow-sm mb-4" role="alert">
+        <h2 class="h5"><i class="bi bi-key me-1" aria-hidden="true"></i> Inicijalna lozinka</h2>
+        <p class="mb-2">Prosledite ovu jednokratno prikazanu lozinku studentu:</p>
+        <code class="fs-5 user-select-all">{{ session('generated_password') }}</code>
+    </div>
+@endif
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="h2 mb-1">{{ $student->name }}</h1>

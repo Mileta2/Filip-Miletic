@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\ResetPasswordRequest;
 use App\Http\Requests\Admin\StoreProfessorRequest;
 use App\Http\Requests\Admin\UpdateProfessorRequest;
 use App\Models\User;
+use App\Support\TemporaryPassword;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -46,11 +47,12 @@ class ProfessorController extends Controller
     public function store(StoreProfessorRequest $request): RedirectResponse
     {
         $data = $request->validated();
-        $professor = DB::transaction(function () use ($data) {
+        $initialPassword = TemporaryPassword::generate();
+        $professor = DB::transaction(function () use ($data, $initialPassword) {
             $professor = User::create([
                 'name' => $data['first_name'].' '.$data['last_name'],
                 'email' => $data['email'],
-                'password' => $data['password'],
+                'password' => $initialPassword,
                 'role' => UserRole::Professor,
                 'must_change_password' => true,
                 'is_active' => $data['is_active'],
@@ -65,7 +67,8 @@ class ProfessorController extends Controller
         });
 
         return redirect()->route('admin.professors.show', $professor)
-            ->with('success', 'Profesor je uspešno kreiran.');
+            ->with('success', 'Profesor je uspešno kreiran.')
+            ->with('generated_password', $initialPassword);
     }
 
     public function show(User $professor): View

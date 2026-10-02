@@ -6,7 +6,6 @@ use App\Enums\StudyLevel;
 use App\Support\InstitutionalEmail;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Password;
 
 class StoreStudentRequest extends FormRequest
 {
@@ -57,7 +56,6 @@ class StoreStudentRequest extends FormRequest
             'index_number' => ['required', 'string', 'max:50', 'unique:student_profiles,index_number'],
             'study_level' => ['required', Rule::enum(StudyLevel::class)],
             'study_year' => ['required', 'integer', 'min:1', Rule::when($this->input('study_level') === StudyLevel::Master->value, ['max:2'], ['max:4'])],
-            'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()],
             'is_active' => ['required', 'boolean'],
         ];
     }

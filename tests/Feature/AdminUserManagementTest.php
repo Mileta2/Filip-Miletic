@@ -8,6 +8,7 @@ use App\Enums\UserRole;
 use App\Models\Topic;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class AdminUserManagementTest extends TestCase
@@ -35,6 +36,9 @@ class AdminUserManagementTest extends TestCase
         $this->assertSame(UserRole::Student, $student->role);
         $this->assertTrue($student->must_change_password);
         $this->assertDatabaseHas('student_profiles', ['index_number' => '108/22', 'study_year' => 4]);
+        $initialPassword = session('generated_password');
+        $this->assertMatchesRegularExpression('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/', $initialPassword);
+        $this->assertTrue(Hash::check($initialPassword, $student->password));
     }
 
     public function test_administrator_moze_da_izmeni_predlozeni_studentski_email(): void
@@ -147,7 +151,8 @@ class AdminUserManagementTest extends TestCase
             ->assertSee('id="email" name="email" type="hidden"', false)
             ->assertSee('data-student-form', false)
             ->assertSee('data-email-edit', false)
-            ->assertSee('Najmanje 8 znakova, uz veliko slovo, malo slovo i broj.');
+            ->assertSee('Inicijalna lozinka se generiše automatski.')
+            ->assertDontSee('name="password"', false);
     }
 
     public function test_slozenost_lozinke_ima_srpsku_poruku(): void
@@ -193,6 +198,25 @@ class AdminUserManagementTest extends TestCase
             'password_confirmation' => 'Lozinka123',
             'is_active' => '1',
         ])->assertSessionHasErrors('email');
+    }
+
+    public function test_profesor_dobija_automatski_generisanu_inicijalnu_lozinku(): void
+    {
+        $admin = User::factory()->superAdmin()->create();
+
+        $this->actingAs($admin)->post(route('admin.professors.store'), [
+            'first_name' => 'Novi',
+            'last_name' => 'Profesor',
+            'email' => 'novi.profesor@ftnkm.rs',
+            'academic_title' => 'Docent',
+            'department' => 'Katedra za računarstvo i informatiku',
+            'is_active' => '1',
+        ])->assertSessionDoesntHaveErrors();
+
+        $professor = User::where('email', 'novi.profesor@ftnkm.rs')->firstOrFail();
+        $initialPassword = session('generated_password');
+        $this->assertMatchesRegularExpression('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/', $initialPassword);
+        $this->assertTrue(Hash::check($initialPassword, $professor->password));
     }
 
     public function test_administrator_moze_da_deaktivira_i_resetuje_lozinku_profesoru(): void

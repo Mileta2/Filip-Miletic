@@ -1,6 +1,9 @@
 @extends('layouts.app')
 @section('title', $professor->name)
 @section('content')
+@if(session('generated_password'))
+<div class="alert alert-warning shadow-sm mb-4" role="alert"><h2 class="h5"><i class="bi bi-key me-1" aria-hidden="true"></i> Inicijalna lozinka</h2><p class="mb-2">Prosledite ovu jednokratno prikazanu lozinku profesoru:</p><code class="fs-5 user-select-all">{{ session('generated_password') }}</code></div>
+@endif
 <div class="d-flex justify-content-between align-items-center mb-4"><div><h1 class="h2 mb-1">{{ $professor->name }}</h1><span class="badge {{ $professor->is_active ? 'text-bg-success' : 'text-bg-secondary' }}">{{ $professor->is_active ? 'Aktivan nalog' : 'Neaktivan nalog' }}</span></div><a class="btn btn-primary" href="{{ route('admin.professors.edit', $professor) }}">Izmeni podatke</a></div>
 <div class="row g-4"><div class="col-lg-7"><div class="card border-0 shadow-sm"><div class="card-body p-4"><h2 class="h5 mb-3">Osnovni podaci</h2><dl class="row mb-0"><dt class="col-sm-4">Email</dt><dd class="col-sm-8">{{ $professor->email }}</dd><dt class="col-sm-4">Zvanje</dt><dd class="col-sm-8">{{ $professor->professorProfile->academic_title }}</dd><dt class="col-sm-4">Katedra</dt><dd class="col-sm-8">{{ $professor->professorProfile->department ?: '—' }}</dd><dt class="col-sm-4">Oblast</dt><dd class="col-sm-8">{{ $professor->professorProfile->research_area ?: '—' }}</dd><dt class="col-sm-4">Broj tema</dt><dd class="col-sm-8">{{ $professor->mentored_topics_count }}</dd></dl></div></div></div>
 <div class="col-lg-5"><div class="card border-0 shadow-sm mb-4"><div class="card-body p-4"><h2 class="h5">Upravljanje nalogom</h2><form method="POST" action="{{ route('admin.professors.toggle', $professor) }}">@csrf @method('PATCH')<button class="btn btn-outline-{{ $professor->is_active ? 'danger' : 'success' }} w-100">{{ $professor->is_active ? 'Deaktiviraj nalog' : 'Aktiviraj nalog' }}</button></form></div></div>

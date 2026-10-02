@@ -9,6 +9,7 @@ use App\Http\Requests\Admin\ResetPasswordRequest;
 use App\Http\Requests\Admin\StoreStudentRequest;
 use App\Http\Requests\Admin\UpdateStudentRequest;
 use App\Models\User;
+use App\Support\TemporaryPassword;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -44,12 +45,13 @@ class StudentController extends Controller
     public function store(StoreStudentRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        $initialPassword = TemporaryPassword::generate();
 
-        $student = DB::transaction(function () use ($data) {
+        $student = DB::transaction(function () use ($data, $initialPassword) {
             $student = User::create([
                 'name' => $data['first_name'].' '.$data['last_name'],
                 'email' => $data['email'],
-                'password' => $data['password'],
+                'password' => $initialPassword,
                 'role' => UserRole::Student,
                 'must_change_password' => true,
                 'is_active' => $data['is_active'],
@@ -64,7 +66,8 @@ class StudentController extends Controller
         });
 
         return redirect()->route('admin.students.show', $student)
-            ->with('success', 'Student je uspešno kreiran.');
+            ->with('success', 'Student je uspešno kreiran.')
+            ->with('generated_password', $initialPassword);
     }
 
     public function show(User $student): View

@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Password;
 
 class StoreProfessorRequest extends FormRequest
 {
@@ -28,7 +27,6 @@ class StoreProfessorRequest extends FormRequest
             'academic_title' => ['required', 'string', 'max:150'],
             'department' => ['nullable', 'string', 'max:255'],
             'research_area' => ['nullable', 'string', 'max:2000'],
-            'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()],
             'is_active' => ['required', 'boolean'],
         ];
     }
