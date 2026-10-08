@@ -54,7 +54,7 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
-    'faculty_name' => env('APP_FACULTY_NAME', 'Fakultet tehničkih nauka'),
+    'faculty_name' => env('APP_FACULTY_NAME', 'Fakultet tehničkih nauka u Prištini'),
 
     'email_domain' => env('APP_EMAIL_DOMAIN', 'ftnkm.rs'),
 

@@ -1,6 +1,6 @@
 # Sistem za izbor tema diplomskih i master radova
 
-Web aplikacija Fakulteta tehničkih nauka za objavljivanje, izbor i praćenje tema diplomskih i master radova. Sistem objedinjuje administraciju korisnika, mentorski rad, izbor teme, evidenciju komisije i završetak odbrane.
+Web aplikacija Fakulteta tehničkih nauka u Prištini za objavljivanje, izbor i praćenje tema diplomskih i master radova. Sistem objedinjuje administraciju korisnika, mentorski rad, izbor teme, evidenciju komisije i završetak odbrane.
 
 Interfejs, validacione poruke i poslovni pojmovi u aplikaciji napisani su na srpskom jeziku.
 
@@ -237,7 +237,7 @@ Podrazumevane razvojne vrednosti već odgovaraju Docker okruženju:
 ```dotenv
 APP_URL=http://localhost:8080
 APP_PORT=8080
-APP_FACULTY_NAME="Fakultet tehničkih nauka"
+APP_FACULTY_NAME="Fakultet tehničkih nauka u Prištini"
 APP_EMAIL_DOMAIN="ftnkm.rs"
 
 DB_CONNECTION=mysql

@@ -11,7 +11,7 @@
 <section class="hero-panel rounded-4 p-4 p-lg-5 mb-5 text-white overflow-hidden">
     <div class="row align-items-center g-4">
         <div class="col-lg-8 position-relative z-1">
-            <span class="badge rounded-pill bg-light text-primary mb-3">Fakultet tehničkih nauka</span>
+            <span class="badge rounded-pill bg-light text-primary mb-3">Fakultet tehničkih nauka u Prištini</span>
             <h1 class="display-5 fw-bold">Sistem za izbor tema diplomskih i master radova</h1>
             <p class="lead text-white-50 mb-4">Informacioni sistem je namenjen pregledu, izboru i praćenju tema završnih radova na osnovnim i master studijama.</p>
             <div class="d-flex flex-wrap gap-2">
@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="col-lg-4 text-center position-relative z-1">
-            <img class="hero-logo" src="{{ asset('images/logo-ftn-icon.png') }}" width="96" height="96" style="width: 96px !important; height: 96px !important;" alt="Logo Fakulteta tehničkih nauka">
+            <img class="hero-logo" src="{{ asset('images/logo-ftn-icon.png') }}" width="96" height="96" style="width: 96px !important; height: 96px !important;" alt="Logo Fakulteta tehničkih nauka u Prištini">
         </div>
     </div>
 </section>
