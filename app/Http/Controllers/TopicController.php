@@ -9,11 +9,14 @@ use App\Http\Requests\StoreTopicRequest;
 use App\Http\Requests\UpdateTopicRequest;
 use App\Models\Topic;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -112,6 +115,21 @@ class TopicController extends Controller
         return view('topics.show', [
             'topic' => $topic->load(['mentor.professorProfile', 'student.studentProfile', 'committeeMembers.professor.professorProfile']),
         ]);
+    }
+
+    public function exportPdf(Request $request, Topic $topic): Response|RedirectResponse
+    {
+        if ($redirect = $this->redirectStudentToOwnCatalog($request, $topic->type)) {
+            return $redirect;
+        }
+
+        $topic->load(['mentor.professorProfile', 'student.studentProfile', 'committeeMembers.professor.professorProfile']);
+        $titleSlug = Str::limit(Str::slug($topic->title), 80, '') ?: 'tema';
+        $fileName = "{$topic->type->value}-tema-{$topic->id}-{$titleSlug}.pdf";
+
+        return Pdf::loadView('topics.pdf', compact('topic'))
+            ->setPaper('a4')
+            ->download($fileName);
     }
 
     public function create(Request $request): View

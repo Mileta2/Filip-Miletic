@@ -278,6 +278,32 @@ class TopicWorkflowTest extends TestCase
         ])->assertSessionHasErrors('pdf');
     }
 
+    public function test_svaka_tema_moze_da_se_preuzme_kao_generisani_pdf(): void
+    {
+        $topic = Topic::factory()->create([
+            'title' => 'Primena veštačke inteligencije u obrazovanju',
+            'description' => 'Detaljan opis teme sa srpskim slovima: č, ć, š, ž i đ.',
+        ]);
+
+        $response = $this->get(route('topics.export.pdf', $topic));
+
+        $response
+            ->assertOk()
+            ->assertHeader('content-type', 'application/pdf')
+            ->assertDownload();
+        $this->assertStringStartsWith('%PDF-', $response->getContent());
+    }
+
+    public function test_student_ne_moze_da_preuzme_pdf_teme_drugog_nivoa_studija(): void
+    {
+        $student = User::factory()->student(StudyLevel::Master)->create();
+        $topic = Topic::factory()->create(['type' => TopicType::Undergraduate]);
+
+        $this->actingAs($student)
+            ->get(route('topics.export.pdf', $topic))
+            ->assertRedirect(route('topics.master'));
+    }
+
     public function test_teme_mogu_da_se_filtriraju_po_profesoru_predmetu_i_statusu(): void
     {
         $firstProfessor = User::factory()->professor()->create(['name' => 'Petar Milić']);

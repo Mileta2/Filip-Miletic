@@ -48,7 +48,8 @@ Posetilac može da:
 - pregleda diplomske i master teme;
 - filtrira teme po profesoru, predmetu i statusu;
 - pretražuje teme po naslovu i drugim dostupnim podacima;
-- otvori detaljan prikaz pojedinačne teme.
+- otvori detaljan prikaz pojedinačne teme;
+- preuzme podatke o temi kao uredno formatiran PDF dokument.
 
 ### Student
 
@@ -78,7 +79,7 @@ Profesor može da:
 - kreira diplomske i master teme za predmete koje drži;
 - pregleda i izmeni svoje teme;
 - obriše svoje teme, bez obzira na njihov trenutni status;
-- doda ili zameni privatni PDF dokument teme;
+- doda ili zameni privatni PDF prilog uz temu;
 - vidi studenta koji je izabrao temu;
 - oslobodi zauzetu temu;
 - definiše predsednika i članove komisije;
@@ -122,17 +123,19 @@ Prilikom kreiranja studenta:
 - Deaktiviranjem profesora njegove teme ostaju u bazi, ali nisu vidljive u sistemu.
 - Brisanjem profesora brišu se i sve teme kojima je bio mentor.
 - Brisanje studenta zahteva potvrdu lozinkom trenutno prijavljenog administratora.
-- PDF dokumenti tema nisu javno dostupni direktnim URL-om.
+- Generisani PDF sa javnim podacima teme može se preuzeti iz detaljnog prikaza teme.
+- PDF prilozi koje profesor otpremi čuvaju se privatno i dostupni su samo prijavljenim korisnicima kroz aplikaciju.
 
 ## Tehnologije i servisi
 
 | Sloj | Tehnologija |
 |---|---|
-| Backend | PHP 8.3 u Docker okruženju, Laravel 12 |
+| Backend | PHP 8.4 u Docker okruženju, Laravel 12 |
 | Frontend | Blade, Bootstrap 5, Bootstrap Icons, Vite |
 | Baza | MariaDB 11.4 |
 | Web server | Nginx 1.27 |
 | Frontend alati | Node.js 22 |
+| PDF dokumenti | Dompdf kroz Laravel integraciju |
 | Testovi | PHPUnit 11, SQLite baza u memoriji |
 | Razvojno okruženje | Docker Engine i Docker Compose v2 |
 
@@ -524,7 +527,7 @@ Sistem koristi sledeće zaštite:
 - middleware provere prijave, aktivnog naloga i korisničke uloge;
 - policy autorizaciju nad temama;
 - transakciju i `lockForUpdate` pri izboru teme;
-- privatno skladištenje PDF dokumenata;
+- privatno skladištenje PDF priloga i kontrolisano preuzimanje kroz aplikaciju;
 - soft delete korisničkih naloga gde se čuvaju istorijski podaci.
 
 Za produkciono okruženje obavezno:

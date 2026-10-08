@@ -1,13 +1,17 @@
-FROM php:8.3-fpm-bookworm
+FROM php:8.4-fpm-bookworm
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         git \
+        libfreetype6-dev \
         libicu-dev \
+        libjpeg62-turbo-dev \
         libonig-dev \
+        libpng-dev \
         libzip-dev \
         unzip \
-    && docker-php-ext-install bcmath intl mbstring opcache pdo_mysql zip \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install bcmath gd intl mbstring opcache pdo_mysql zip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

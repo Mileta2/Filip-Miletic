@@ -20,6 +20,7 @@ Route::get('/teme', [TopicController::class, 'index'])->name('topics.index');
 Route::get('/diplomski-radovi', [TopicController::class, 'undergraduate'])->name('topics.undergraduate');
 Route::get('/master-radovi', [TopicController::class, 'master'])->name('topics.master');
 Route::get('/teme/{topic}', [TopicController::class, 'show'])->name('topics.show');
+Route::get('/teme/{topic}/preuzmi-pdf', [TopicController::class, 'exportPdf'])->name('topics.export.pdf');
 
 Route::middleware('guest')->group(function () {
     Route::get('/prijava', [LoginController::class, 'create'])->name('login');
